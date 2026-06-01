@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bansal Designer Studio - Premium Control Ledger</title>
+    <!-- Tailwind CSS (Loads if online/allowed, fallback styling is written below to prevent unstyled layouts) -->
+        <script src="https://cdn.tailwindcss.com"></script>
+    
+        <!-- Firebase SDK (Namespace-based v8 libraries, highly stable for both local files and web hosting) -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+        
+        <style>
+        /* ==========================================================================
+           PREMIUM DESIGN SYSTEM & OFFLINE CSS FALLBACKS
+           Provides an extremely beautiful, high-end styling layout for the app.
+           ========================================================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+        :root {
+            --primary: #121212;
+            --primary-light: #2c2c2c;
+            --gold: #C5A880;
+            --gold-light: #DFBA73;
+            --gold-dark: #A98A59;
+            --surface: #ffffff;
+            --background: #FAF8F5; /* Luxury warm alabaster/ivory white */
+            --border: #E8E5E0;
+            --text-dark: #121212;
+            --text-muted: #6E6D6A;
+            --accent-success: #1E4620;
+            --accent-success-bg: #E8F5E9;
+            --accent-danger: #8C1D1D;
+            --accent-danger-bg: #FFEBEE;
+            --accent-warning: #9C640C;
+            --accent-warning-bg: #FFF3E0;
+        }
+
+        /* Essential Reset & Layout Styles */
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Luxury Serif Typography */
+        .serif-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+        }
+
+        .brand-subtitle {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        
+        /* Glassmorphism Layers */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid rgba(232, 229, 224, 0.6) !important;
+        }
+
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        /* Interactive Animation Layers */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+
+        /* Premium Visual Cards & Buttons */
+        .premium-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 45px rgba(18, 18, 18, 0.05);
+            border-color: var(--gold);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid var(--gold) !important;
+            transition: all 0.25s ease !important;
+        }
+        .btn-gold:hover {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 16px rgba(197, 168, 128, 0.35) !important;
+        }
+
+        .btn-dark {
+            background: #121212 !important;
+            color: #ffffff !important;
+            border: 1px solid #121212 !important;
+            transition: all 0.25s ease !important;
+        }
+        .btn-dark:hover {
+            background: #2a2a2a !important;
+            border-color: #2a2a2a !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 16px rgba(18, 18, 18, 0.15) !important;
+        }
+
+        /* Custom Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF8F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D5D2CC;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
+        }
+
+        /* Status colors mapping classes */
+        .status-intake {
+            background-color: var(--background) !important;
+            color: var(--text-dark) !important;
+            border: 1px solid var(--border) !important;
+        }
+        .status-workshop {
+            background-color: var(--accent-warning-bg) !important;
+            color: var(--accent-warning) !important;
+            border: 1px solid rgba(156, 100, 12, 0.25) !important;
+        }
+        .status-ready {
+            background-color: var(--accent-success-bg) !important;
+            color: var(--accent-success) !important;
+            border: 1px solid rgba(30, 70, 32, 0.25) !important;
+        }
+        .status-delivered {
+            background-color: #ECEFF1 !important;
+            color: #455A64 !important;
+            border: 1px solid rgba(69, 90, 100, 0.25) !important;
+        }
+
+        /* Specific Printer Styling rules */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area-wrapper, #print-area-wrapper * {
+                visibility: visible;
+            }
+            #print-area-wrapper {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* iPad Safari Zoom Prevention & Touch Optimizations */
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        /* Ensure smooth touch scrolling on iOS */
+        .overflow-y-auto, .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Force background color printing */
+        #print-area-wrapper {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+        /* Unified Premium Segmented Control for iPad OS feel */
+        .segmented-control {
+            background-color: #F1EFEA !important;
+            padding: 2px !important;
+            border-radius: 12px !important;
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 2px !important;
+        }
+        .segmented-btn {
+            font-size: 10px !important;
+            font-weight: 750 !important;
+            padding: 8px 4px !important;
+            border-radius: 10px !important;
+            transition: all 0.2s ease !important;
+            text-align: center !important;
+            border: none !important;
+            cursor: pointer !important;
+        }
+        .segmented-btn.active-intake {
+            background-color: #ffffff !important;
+            color: var(--text-dark) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+        }
+        .segmented-btn.active-workshop {
+            background-color: #FFF3E0 !important;
+            color: #9C640C !important;
+            box-shadow: 0 2px 8px rgba(156,100,12,0.15) !important;
+        }
+        .segmented-btn.active-ready {
+            background-color: #E8F5E9 !important;
+            color: #1E4620 !important;
+            box-shadow: 0 2px 8px rgba(30,70,32,0.15) !important;
+        }
+        .segmented-btn.active-delivered {
+            background-color: #ECEFF1 !important;
+            color: #455A64 !important;
+            box-shadow: 0 2px 8px rgba(69,90,100,0.1) !important;
+        }
+        .segmented-btn.inactive {
+            background-color: transparent !important;
+            color: #8C8A85 !important;
+        }
+        .segmented-btn.inactive:hover {
+            color: var(--text-dark) !important;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased selection:bg-stone-200">
+
+    <!-- App Shell Container -->
+    <div class="min-h-screen flex flex-col no-print">
+        
+        <!-- Navigation Header -->
+        <header class="sticky top-0 z-40 glass-header px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-3.5 w-full md:w-auto">
+                <div class="bg-stone-950 text-white p-3 rounded-2xl flex items-center justify-center shadow-md border border-stone-800">
+                    <!-- Scissors SVG Icon -->
+                    <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="6" cy="6" r="3" />
+                        <circle cx="6" cy="18" r="3" />
+                        <line x1="9.8" y1="8.2" x2="20" y2="18" />
+                        <line x1="9.8" y1="15.8" x2="20" y2="6" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl text-stone-900 serif-title">Bansal Designer Studio</h1>
+                    <p class="text-[9px] text-stone-505 font-bold uppercase tracking-widest brand-subtitle">Digital Control Ledger</p>
+                </div>
+            </div>
+
+            <!-- Tab Switchers -->
+            <nav class="flex items-center p-1 bg-stone-100 rounded-xl border border-stone-200 w-full md:w-auto justify-around">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-5 py-2.5 rounded-lg text-xs font-bold transition-all bg-stone-955 text-white shadow-sm border border-stone-900">
+                    Dashboard
+                </button>
+                <button onclick="switchTab('bookings')" id="tab-bookings" class="px-5 py-2.5 rounded-lg text-xs font-bold transition-all text-stone-500 hover:text-stone-950 flex items-center gap-1.5">
+                    <span>Ledger Index</span>
+                    <span id="badge-total-bookings" class="bg-stone-200 text-stone-700 px-1.5 py-0.5 rounded text-[9px] font-black">0</span>
+                </button>
+                <button onclick="switchTab('tailors')" id="tab-tailors" class="px-5 py-2.5 rounded-lg text-xs font-bold transition-all text-stone-500 hover:text-stone-950">
+                    Partners
+                </button>
+            </nav>
+
+            <!-- Fast Intake Trigger Button -->
+            <button onclick="openNewBookingModal()" class="w-full md:w-auto btn-gold font-bold px-5 py-3 rounded-xl flex items-center justify-center gap-2 text-xs tracking-wider uppercase font-mono shadow-md">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>New Customer Intake</span>
+            </button>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6 max-w-[1550px] w-full mx-auto">
+            
+            <!-- Dynamic Toast Container -->
+            <div id="toast-box" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-950 text-white border border-stone-800 hidden transition-all">
+                <span id="toast-message" class="font-bold text-xs tracking-wide"></span>
+            </div>
+
+            <!-- TAB 1: DASHBOARD VIEW -->
+            <div id="view-dashboard" class="space-y-8 animate-fade-in">
+                <!-- Welcome Widget Card -->
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-stone-950 via-neutral-900 to-stone-900 p-8 shadow-xl text-white border border-stone-800">
+                    <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-amber-500/10 blur-3xl pointer-events-none"></div>
+                    <div class="max-w-2xl relative z-10">
+                        <span class="bg-stone-900/80 text-stone-300 text-[9px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-widest border border-stone-800 font-mono">
+                            Studio Workspace Active
+                        </span>
+                        <h2 class="text-3xl mt-4 tracking-tight serif-title">Fitting Trials, Final Deliveries & Event Dates</h2>
+                        <p class="text-stone-300/80 text-xs mt-2.5 leading-relaxed max-w-xl">
+                            First comes Trial fitting (<strong class="text-amber-400 font-bold">1st</strong>), second comes Final Delivery (<strong class="text-amber-400 font-bold">2nd</strong>), followed by the Customer's Function (<strong class="text-amber-400 font-bold">3rd</strong>). Assign works sheets to Masterji and notify customer instantly.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Numerical Status Widgets -->
+                <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div onclick="switchTab('bookings', 'At Shop Counter')" class="premium-card p-6 cursor-pointer group relative overflow-hidden bg-white">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-stone-950"></div>
+                        <div class="flex items-center justify-between text-stone-400">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-stone-500">Awaiting Counter</span>
+                            <span class="text-stone-600 font-bold text-[10px] font-mono uppercase bg-stone-100 px-2 py-0.5 rounded border border-stone-200">Intake</span>
+                        </div>
+                        <p id="count-awaiting" class="text-4xl font-bold text-stone-900 mt-4 font-mono group-hover:translate-x-1 transition-transform duration-200 origin-left">0</p>
+                        <span class="text-[10px] text-stone-400 mt-2 block">Sitting at BDS counter</span>
+                    </div>
+
+                    <div onclick="switchTab('bookings', 'With Tailor')" class="premium-card p-6 cursor-pointer group relative overflow-hidden bg-white">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
+                        <div class="flex items-center justify-between text-stone-400">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-stone-500">Outsourced Load</span>
+                            <span class="text-amber-700 font-bold text-[10px] font-mono uppercase bg-amber-50 px-2 py-0.5 rounded border border-amber-100">At Workshop</span>
+                        </div>
+                        <p id="count-outsourced" class="text-4xl font-bold text-stone-900 mt-4 font-mono group-hover:translate-x-1 transition-transform duration-200 origin-left">0</p>
+                        <span class="text-[10px] text-stone-400 mt-2 block">Currently with Masterji</span>
+                    </div>
+
+                    <div onclick="switchTab('bookings', 'Ready for Pickup')" class="premium-card p-6 cursor-pointer group relative overflow-hidden bg-white">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-600"></div>
+                        <div class="flex items-center justify-between text-stone-400">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-stone-500">Ready for Pickup</span>
+                            <span class="text-emerald-700 font-bold text-[10px] font-mono uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">Checked</span>
+                        </div>
+                        <p id="count-ready" class="text-4xl font-bold text-stone-900 mt-4 font-mono group-hover:translate-x-1 transition-transform duration-200 origin-left">0</p>
+                        <span class="text-[10px] text-stone-400 mt-2 block">Stitched & Checked</span>
+                    </div>
+
+                    <div class="premium-card p-6 relative overflow-hidden bg-stone-950 text-white group">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-400"></div>
+                        <div class="absolute -right-8 -bottom-8 w-24 h-24 rounded-full bg-amber-500/5 blur-xl"></div>
+                        <div class="flex items-center justify-between text-stone-400">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-stone-300">Pending collections</span>
+                            <span class="text-amber-400 font-bold text-[10px] font-mono uppercase border border-amber-500/30 px-2 py-0.5 rounded">Ledger Sum</span>
+                        </div>
+                        <p id="sum-revenue" class="text-3xl font-bold text-amber-400 mt-4 font-mono">₹0</p>
+                        <span class="text-[10px] text-stone-400 mt-2.5 block">Pending counter collection balance</span>
+                    </div>
+                </section>
+
+                <!-- Urgent Feed List checklist -->
+                <section class="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden">
+                    <div class="p-6 border-b border-stone-200 flex items-center justify-between bg-stone-50/50">
+                        <h3 class="text-xs font-bold flex items-center gap-2 text-stone-900 uppercase tracking-widest">
+                            <span>Pending Clothes Collections Checklist (Next 10 Days)</span>
+                        </h3>
+                        <span class="text-[10px] font-bold text-stone-400 font-mono uppercase tracking-wider">Sorted by Delivery</span>
+                    </div>
+                    <div id="dashboard-timeline-feed" class="divide-y divide-stone-200">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 2: LEDGER VIEW -->
+            <div id="view-bookings" class="space-y-6 hidden animate-fade-in">
+                
+                <!-- Search & Filters Container -->
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-stone-200 space-y-4">
+                    <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                        <!-- Search Box -->
+                        <div class="relative w-full lg:max-w-md">
+                            <input 
+                                type="text" 
+                                id="search-input"
+                                oninput="triggerSearch()"
+                                placeholder="Search customer, phone, garment, tailor..."
+                                class="w-full bg-stone-50 pl-11 pr-4 py-3.5 rounded-2xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-500 font-medium text-xs transition-all placeholder:text-stone-400 font-semibold"
+                            />
+                            <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Pill filters -->
+                        <div class="flex flex-wrap gap-1.5 w-full lg:w-auto justify-start lg:justify-end">
+                            <button onclick="setStatusFilter('All')" id="filter-All" class="filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-900 text-white border-transparent">All Folders</button>
+                            <button onclick="setStatusFilter('At Shop Counter')" id="filter-At-Shop-Counter" class="filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-50 text-stone-600 border-stone-200">Counter Intake</button>
+                            <button onclick="setStatusFilter('With Tailor')" id="filter-With-Tailor" class="filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-50 text-stone-600 border-stone-200">With Tailor</button>
+                            <button onclick="setStatusFilter('Ready for Pickup')" id="filter-Ready-for-Pickup" class="filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-50 text-stone-600 border-stone-200">Ready</button>
+                            <button onclick="setStatusFilter('Completed & Delivered')" id="filter-Completed-Delivered" class="filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-50 text-stone-600 border-stone-200">Delivered Out</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Folders Grid -->
+                <div id="bookings-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- TAB 3: TAILORS VIEW -->
+            <div id="view-tailors" class="space-y-6 hidden animate-fade-in">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-stone-100 p-5 rounded-2xl border border-stone-200 gap-4">
+                    <div>
+                        <h2 class="text-sm font-bold text-stone-900 uppercase tracking-wider">BDS Ledger Administration</h2>
+                        <p class="text-xs text-stone-500 font-mono">Create backups of your ledger to prevent any local browser data loss</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                                            <button onclick="exportToExcel()" class="flex-1 bg-white hover:bg-stone-50 border border-stone-200 text-stone-900 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all">
+                                                <span>📊 Export to Excel</span>
+                                            </button>
+                                            <button onclick="exportDatabaseBackup()" class="flex-1 bg-white hover:bg-stone-50 border border-stone-200 text-stone-900 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all">
+                                                <span>💾 Save Backup</span>
+                                            </button>
+                                            <button onclick="triggerImportSelection()" class="flex-1 bg-white hover:bg-stone-50 border border-stone-200 text-stone-900 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all">
+                                                <span>📥 Restore Backup</span>
+                                            </button>
+                                            <input type="file" id="import-db-file" accept=".json" class="hidden" onchange="importDatabaseBackup(event)" />
+                                        </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 serif-title">Workshop Masterji Registry</h2>
+                        <p class="text-xs text-stone-400 font-medium font-mono">Monitor out-shop active fabric loads and specialties</p>
+                    </div>
+                    <button onclick="openNewTailorModal()" class="btn-gold font-bold py-2.5 px-4 rounded-xl flex items-center gap-2 text-xs tracking-wider uppercase shadow">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        <span>Add Outsource Partner</span>
+                    </button>
+                </div>
+
+                <div id="tailors-cards-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL 1: NEW BOOKING INTAKE MODAL (Multiple Clothes support!) -->
+    <div id="modal-new-booking" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] overflow-y-auto shadow-2xl border border-stone-200 flex flex-col animate-slide-up">
+            
+            <header class="p-6 border-b border-stone-800 flex items-center justify-between bg-stone-950 text-white rounded-t-3xl">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-stone-900 rounded-xl border border-stone-800">
+                        <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" />
+                            <line x1="9.8" y1="8.2" x2="20" y2="18" /><line x1="9.8" y1="15.8" x2="20" y2="6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-white uppercase tracking-wider">New Sizing Intake Sheet</h2>
+                        <p class="text-xs text-stone-400">Log customer profile, capture portraits, and record custom garments sizing</p>
+                    </div>
+                </div>
+                <button onclick="closeNewBookingModal()" class="p-2 text-stone-400 hover:text-white rounded-xl transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </header>
+
+            <form id="form-new-booking" onsubmit="saveBookingForm(event)" class="p-6 space-y-8 flex-1">
+                
+                <!-- Section A: Client Details -->
+                <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200 space-y-6">
+                    <h3 class="text-[11px] font-black text-stone-500 uppercase tracking-widest flex items-center gap-2 font-mono">
+                        <span>Section A: Customer Profile Information & Face Portrait</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center font-sans">
+                        <!-- Portrait camera -->
+                        <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-stone-200">
+                            <div id="portrait-preview-box">
+                                <label class="w-16 h-16 rounded-full bg-stone-100 border-2 border-dashed border-stone-300 hover:border-stone-505 flex flex-col items-center justify-center text-stone-400 cursor-pointer transition-all">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" /></svg>
+                                    <span class="text-[7px] font-black uppercase mt-1">Face Pic</span>
+                                    <input type="file" accept="image/*" capture="user" onchange="uploadCustomerPhoto(event)" class="hidden" />
+                                </label>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-stone-800 block">Customer Avatar Photo</span>
+                                <p class="text-[9px] text-stone-400 font-medium">Click camera to identify clients folders easily.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-505 mb-1 uppercase tracking-wider">Customer Name *</label>
+                            <input type="text" id="form-cust-name" placeholder="e.g. Ramesh Kumar" class="w-full bg-white px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-500 outline-none font-semibold text-stone-900" />
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-505 mb-1 uppercase tracking-wider">Contact Phone *</label>
+                            <input type="tel" id="form-cust-phone" placeholder="e.g. 9811223344" class="w-full bg-white px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-500 outline-none font-semibold text-stone-900" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-stone-200/60 font-sans">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-505 mb-1 uppercase tracking-wider">3rd Date: Function/Event Date</label>
+                            <input type="date" id="form-func-date" class="w-full bg-white px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-550 outline-none font-semibold text-stone-700" />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-505 mb-1 uppercase tracking-wider">Total Combined Bill (₹)</label>
+                            <input type="number" id="form-total-bill" placeholder="Combined invoice bill sum" class="w-full bg-white px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-500 outline-none font-semibold text-stone-900" />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-505 mb-1 uppercase tracking-wider">Advance Deposited (₹)</label>
+                            <input type="number" id="form-advance-paid" placeholder="Amount paid at counter" class="w-full bg-white px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-500 outline-none font-semibold text-stone-900" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section B: Clothes List -->
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                        <h3 class="text-[11px] font-black text-stone-505 uppercase tracking-widest flex items-center gap-2 font-mono">
+                            <span>Section B: Clothes inside this Portfolio</span>
+                        </h3>
+                        <button type="button" onclick="addNewGarmentRow()" class="btn-dark px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow">
+                            <span>Add Another Garment Row</span>
+                        </button>
+                    </div>
+
+                    <!-- Row Wrapper -->
+                    <div id="garments-row-container" class="space-y-6">
+                        <!-- Dynamic Garments rows are generated here by JS -->
+                    </div>
+                </div>
+
+                <!-- Section C: General remarks -->
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-505 mb-1 uppercase tracking-wider font-mono">General Studio Notes</label>
+                    <textarea id="form-booking-notes" rows="2" placeholder="General alteration comments, designs instructions, payment references..." class="w-full bg-stone-50 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-500 outline-none font-semibold mb-3 text-stone-800"></textarea>
+                    
+                    <!-- Quick notes selector -->
+                    <div class="space-y-2">
+                        <span class="text-[9px] text-stone-400 font-extrabold block uppercase tracking-wider font-mono">Tap Quick-Notes to Append:</span>
+                        <div class="flex flex-wrap gap-1.5 font-sans">
+                            <button type="button" onclick="appendQuickNoteText('🚨 Urgent Delivery')" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-[10px] font-bold px-3 py-1.5 rounded-lg text-stone-600 transition-all">🚨 Urgent Delivery</button>
+                            <button type="button" onclick="appendQuickNoteText('🧵 Lining Needed')" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-[10px] font-bold px-3 py-1.5 rounded-lg text-stone-600 transition-all">🧵 Lining Needed</button>
+                            <button type="button" onclick="appendQuickNoteText('⭐ Premium Finish')" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-[10px] font-bold px-3 py-1.5 rounded-lg text-stone-600 transition-all">⭐ Premium Finish</button>
+                            <button type="button" onclick="appendQuickNoteText('📐 Keep Margin')" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-[10px] font-bold px-3 py-1.5 rounded-lg text-stone-600 transition-all">📐 Keep Margin</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer controllers -->
+                <footer class="pt-4 border-t border-stone-200 flex items-center justify-end gap-3 font-sans">
+                    <button type="button" onclick="closeNewBookingModal()" class="px-5 py-2.5 text-stone-400 hover:text-stone-900 text-xs font-bold uppercase tracking-wider">Discard Draft</button>
+                    <button type="submit" class="btn-gold font-bold px-6 py-3 rounded-xl shadow text-xs tracking-wider uppercase font-mono">Save Booking Portfolio</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: NEW TAILOR MODAL -->
+    <div id="modal-new-tailor" class="fixed inset-0 z-50 bg-stone-955/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl border border-stone-200 p-6 space-y-5">
+            <header class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <div>
+                    <h2 class="text-sm font-bold text-stone-900 uppercase tracking-wider">Add Outsource Partner</h2>
+                    <p class="text-xs text-stone-400 font-mono">Save workshop contacts & sewing speciality</p>
+                </div>
+                <button onclick="closeNewTailorModal()" class="text-stone-400 hover:text-stone-600">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </header>
+
+            <form onsubmit="saveTailorForm(event)" class="space-y-4 font-sans">
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 mb-1 uppercase tracking-wider">Workshop Name *</label>
+                    <input type="text" id="tailor-form-name" placeholder="e.g. Rafiq Bhai Master" class="w-full bg-stone-50 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-505 outline-none font-semibold text-stone-900" />
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 mb-1 uppercase tracking-wider">WhatsApp Phone Line *</label>
+                    <input type="tel" id="tailor-form-phone" placeholder="10-digit mobile number" class="w-full bg-stone-50 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-505 outline-none font-semibold text-stone-900" />
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 mb-1 uppercase tracking-wider">Stitching Speciality</label>
+                    <input type="text" id="tailor-form-specialty" placeholder="e.g. Suits, Sherwanis, Blouses" class="w-full bg-stone-50 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:ring-1 focus:ring-stone-505 outline-none font-semibold text-stone-900" />
+                </div>
+
+                <footer class="pt-4 border-t border-stone-100 flex justify-end gap-2.5">
+                    <button type="button" onclick="closeNewTailorModal()" class="px-4 py-2 text-stone-505 text-xs font-bold uppercase tracking-wider">Cancel</button>
+                    <button type="submit" class="btn-dark px-5 py-2.5 rounded-xl text-xs uppercase font-mono font-bold shadow">Register Partner</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: LEDGER CARD DETAILS DRAW_SHEET -->
+    <div id="modal-ledger-drawer" class="fixed inset-0 z-50 bg-stone-955/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[92vh] overflow-y-auto shadow-2xl border border-stone-200 flex flex-col animate-slide-up">
+            <header class="p-6 border-b border-stone-800 flex items-center justify-between bg-stone-950 text-white rounded-t-3xl">
+                <div class="flex items-center gap-3">
+                    <div class="bg-stone-900 p-2.5 rounded-xl border border-stone-800">
+                        <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><line x1="9.8" y1="8.2" x2="20" y2="18" /><line x1="9.8" y1="15.8" x2="20" y2="6" /></svg>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-black tracking-widest text-stone-400 block uppercase font-mono">CLIENT PORTFOLIO REGISTER</span>
+                        <h2 id="drawer-header-title" class="text-base font-bold text-white">Active Sizing File Drawer</h2>
+                    </div>
+                </div>
+                <button onclick="closeLedgerDrawer()" class="p-1.5 bg-stone-900 border border-stone-800 text-white rounded-full transition-all hover:bg-stone-800">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </header>
+
+            <div class="p-6 space-y-6">
+                <!-- Customer Details Grid -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-stone-50 p-5 rounded-2xl border border-stone-200">
+                    <div class="flex items-center gap-4">
+                        <div id="drawer-portrait-avatar">
+                            <!-- Injected by JS -->
+                        </div>
+                        <div>
+                            <span class="text-[9px] text-stone-400 font-bold uppercase tracking-wider block font-mono">Reference Avatar</span>
+                            <h3 id="drawer-cust-name" class="font-bold text-stone-950 text-base">-</h3>
+                            <span id="drawer-cust-phone" class="text-xs font-semibold text-stone-500 mt-0.5 block font-mono">-</span>
+                        </div>
+                    </div>
+                    <div class="text-left md:text-right font-mono">
+                        <span class="text-[9px] text-stone-400 font-bold uppercase tracking-wider block">Function / Wedding Date</span>
+                        <span id="drawer-func-date" class="text-sm font-extrabold text-stone-800 block mt-1">-</span>
+                    </div>
+                </div>
+
+                <!-- Sizing rows list inside details -->
+                <div class="space-y-4">
+                    <span class="text-[11px] font-black text-stone-400 uppercase tracking-widest block font-mono">Section B: Clothes inside this Portfolio</span>
+                    <div id="drawer-garments-list-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Billing rows -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-b border-stone-200 py-5">
+                                    <div class="space-y-3 font-sans">
+                                        <div>
+                                            <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider block font-mono">Counter Remarks</span>
+                                            <p id="drawer-booking-notes" class="text-xs text-stone-600 italic font-semibold">-</p>
+                                        </div>
+                                        <div class="flex items-center gap-2 pt-2 border-t border-stone-100">
+                                                                    <div class="flex-1">
+                                                                        <label class="block text-[9px] text-stone-500 font-bold uppercase font-mono mb-1">Add Paid Amount (₹)</label>
+                                                                        <input type="number" id="drawer-payment-input" placeholder="e.g. 2000" class="w-full bg-white px-3 py-1.5 rounded-lg border border-stone-200 text-xs font-semibold text-stone-900 focus:ring-1 focus:ring-stone-500 outline-none" />
+                                                                    </div>
+                                                                    <div class="flex gap-1.5 self-end">
+                                                                        <button type="button" onclick="recordDrawerPayment()" class="btn-dark px-3 py-2 rounded-xl text-[10px] font-bold shadow-sm font-mono">Record</button>
+                                                                        <button type="button" onclick="clearAllDrawerDues()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-[10px] font-bold shadow-sm font-mono">Clear Dues</button>
+                                                                    </div>
+                                                                </div>
+                                    </div>
+                                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 grid grid-cols-3 gap-2 text-xs">
+                                        <div>
+                                            <span class="text-[9px] text-stone-400 font-bold uppercase block font-mono">Combined Bill</span>
+                                            <span id="drawer-total-bill" class="text-sm font-bold text-stone-950">₹0</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-[9px] text-stone-400 font-bold uppercase block font-mono">Advance Paid</span>
+                                            <span id="drawer-advance-paid" class="text-sm font-bold text-stone-950">₹0</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-[9px] text-stone-400 font-bold uppercase block font-mono">Balance Due</span>
+                                            <span id="drawer-pending-balance" class="text-sm font-black text-rose-600">₹0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                <!-- Footer drawer utilities -->
+                <footer id="drawer-footer-actions" class="pt-2 flex flex-wrap items-center justify-between gap-3">
+                    <!-- Populated dynamically by JS -->
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: DELETION CONFIRM MODAL -->
+    <div id="modal-confirm-delete" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full border border-stone-200 shadow-2xl space-y-4 text-center">
+            <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto border border-rose-100">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </div>
+            <div>
+                <h3 id="delete-modal-title" class="font-bold text-stone-900 text-base">Permanently Delete File?</h3>
+                <p id="delete-modal-desc" class="text-xs text-stone-500 mt-1 leading-normal">This action is permanent and cannot be undone.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+                <button onclick="closeDeleteConfirmModal()" class="py-2.5 text-xs font-bold border border-stone-200 rounded-xl hover:bg-stone-50">Cancel</button>
+                <button id="delete-confirm-btn" class="py-2.5 text-xs font-bold bg-stone-950 hover:bg-stone-900 text-white rounded-xl shadow-sm">Delete File</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: PREMIUM INVOICE PREVIEW MODAL -->
+    <div id="modal-invoice-preview" class="fixed inset-0 z-50 bg-stone-955/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl w-full max-w-3xl max-h-[92vh] overflow-y-auto shadow-2xl border border-stone-200 flex flex-col animate-slide-up">
+            
+            <header class="p-6 border-b border-stone-200 flex items-center justify-between bg-white text-stone-900 rounded-t-3xl no-print">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold uppercase bg-stone-100 text-stone-800 px-3 py-1 rounded-full font-mono">Invoice Invoice Bill</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="printInvoice()" class="btn-dark font-extrabold text-xs px-4 py-2.5 rounded-xl shadow transition-all flex items-center gap-1.5">
+                        <span>🖨️ Print Receipt</span>
+                    </button>
+                    <button onclick="closeInvoiceModal()" class="p-1.5 bg-stone-100 hover:bg-stone-200 text-stone-500 rounded-full transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Printable Receipt Canvas block -->
+            <div id="print-area-wrapper" class="p-8 md:p-12 bg-white text-stone-900 space-y-8 font-sans">
+                <!-- Receipt Header -->
+                <div class="flex justify-between items-start border-b-2 border-stone-900 pb-6">
+                    <div>
+                        <h2 class="text-3xl tracking-tight uppercase serif-title">Bansal Designer Studio</h2>
+                        <p class="text-xs text-stone-500 font-semibold mt-1">Premium Bespoke Tailoring & Couture Designer Wear</p>
+                        <p class="text-[10px] text-stone-400 font-mono mt-0.5">Vidisha, Madhya Pradesh, India</p>
+                    </div>
+                    <div class="text-right font-mono text-[11px] text-stone-500">
+                        <p><strong>INVOICE ID:</strong> <span id="bill-invoice-id" class="text-stone-900 font-bold">#</span></p>
+                        <p class="mt-1"><strong>DATE:</strong> <span id="bill-invoice-date" class="text-stone-900 font-bold">-</span></p>
+                    </div>
+                </div>
+
+                <!-- Customer metadata -->
+                <div class="grid grid-cols-2 gap-6 bg-stone-50 p-5 rounded-2xl border border-stone-200">
+                    <div>
+                        <span class="text-[9px] text-stone-400 font-black uppercase tracking-wider block font-mono">BILLED TO:</span>
+                        <h4 id="bill-cust-name" class="font-extrabold text-stone-900 text-base mt-1">-</h4>
+                        <p id="bill-cust-phone" class="text-xs text-stone-500 font-mono mt-0.5">-</p>
+                    </div>
+                    <div class="text-right font-mono">
+                        <span class="text-[9px] text-stone-400 font-black uppercase tracking-wider block">FUNCTION EVENT DATE:</span>
+                        <h4 id="bill-func-date" class="font-bold text-stone-800 text-sm mt-1">-</h4>
+                    </div>
+                </div>
+
+                <!-- Items list -->
+                <div class="space-y-4">
+                    <span class="text-[10px] text-stone-400 font-black uppercase tracking-widest block font-mono">ITEMIZED SIZING DETAILS & ESTIMATES</span>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-stone-300 text-[10px] font-bold text-stone-400 uppercase font-mono">
+                                <th class="pb-2">Garment Item</th>
+                                <th class="pb-2 text-right">Amount</th>
+                                <th class="pb-2 text-center">1st Fit (Trial)</th>
+                                <th class="pb-2 text-right">2nd Delivery</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bill-items-tbody" class="divide-y divide-stone-200 text-xs">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Ledger Remarks -->
+                <div id="bill-remarks-container" class="border-t border-stone-200 pt-4 space-y-1.5 hidden">
+                    <span class="text-[9px] text-stone-400 font-black uppercase tracking-wider block font-mono">Special Design Notes:</span>
+                    <p id="bill-remarks-text" class="text-xs text-stone-600 italic font-semibold leading-relaxed"></p>
+                </div>
+
+                <!-- Financial Statement Summary -->
+                <div class="border-t-2 border-stone-900 pt-6 flex justify-end">
+                    <div class="w-full max-w-xs space-y-2.5 text-xs">
+                        <div class="flex justify-between font-semibold">
+                            <span class="text-stone-500">Gross Stitching Subtotal:</span>
+                            <span id="bill-total-bill" class="text-stone-950 font-bold">₹0</span>
+                        </div>
+                        <div class="flex justify-between font-semibold text-emerald-700">
+                            <span>Advance Paid:</span>
+                            <span id="bill-advance-paid">₹0</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-sm border-t border-stone-300 pt-2.5 text-stone-950">
+                            <span>Balance Due at Handover:</span>
+                            <span id="bill-pending-balance" class="text-rose-600 font-mono font-bold">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal Terms & Stamp -->
+                <div class="border-t border-stone-200 pt-8 flex flex-col md:flex-row justify-between items-start gap-6 text-[10px] text-stone-400 font-medium leading-relaxed">
+                    <div class="max-w-md">
+                        <span class="font-bold uppercase text-stone-600 tracking-wider font-mono block mb-1">Standard Studio Guidelines:</span>
+                        <p>1. Please bring this design receipt at the time of your 1st Fitting Trial.</p>
+                        <p>2. Customized tailored orders cannot be cancelled or refunded after fabric cutting.</p>
+                        <p>3. Balance payments must be fully processed prior to final garment delivery handovers.</p>
+                    </div>
+                    <div class="text-left md:text-right font-mono">
+                        <p class="text-stone-800 font-bold uppercase text-[9px] tracking-widest">Authorized Signature</p>
+                        <div class="h-10"></div>
+                        <p class="text-stone-300">________________________</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: IPAD CALENDAR SANDBOX FALLBACK HELPER -->
+    <div id="modal-calendar-sync" class="fixed inset-0 z-50 bg-stone-955/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full border border-stone-200 shadow-2xl space-y-4">
+            <header class="flex items-center justify-between border-b pb-2">
+                <h3 class="font-bold text-stone-900 text-sm uppercase font-mono">iPad Calendar Guide</h3>
+                <button onclick="closeCalendarModal()" class="text-stone-400 text-sm font-bold">✕</button>
+            </header>
+            <p class="text-xs text-stone-500 leading-relaxed font-sans">Because iPad sandboxing restricts direct folder access, here are the target deadlines for this client. Tap any date to copy details, then open your **Apple Calendar** to paste:</p>
+            
+            <div class="space-y-2.5 font-semibold text-xs font-sans">
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-[8px] text-stone-400 block uppercase">1st Fitting Trial</span>
+                        <span id="cal-trial-text" class="text-stone-800 font-bold">-</span>
+                    </div>
+                    <button onclick="copyToClipboard('cal-trial-text')" class="bg-stone-900 text-white text-[9px] font-bold px-2.5 py-1.5 rounded-lg uppercase">Copy Date</button>
+                </div>
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-[8px] text-stone-400 block uppercase">2nd Final Delivery</span>
+                        <span id="cal-delv-text" class="text-stone-800 font-bold">-</span>
+                    </div>
+                    <button onclick="copyToClipboard('cal-delv-text')" class="bg-stone-900 text-white text-[9px] font-bold px-2.5 py-1.5 rounded-lg uppercase">Copy Date</button>
+                </div>
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-[8px] text-stone-400 block uppercase">3rd Function Date</span>
+                        <span id="cal-func-text" class="text-stone-800 font-bold">-</span>
+                    </div>
+                    <button onclick="copyToClipboard('cal-func-text')" class="bg-stone-900 text-white text-[9px] font-bold px-2.5 py-1.5 rounded-lg uppercase">Copy Date</button>
+                </div>
+            </div>
+            
+            <button onclick="closeCalendarModal()" class="w-full btn-dark py-2.5 rounded-xl font-bold text-xs uppercase shadow">Done</button>
+        </div>
+    </div>
+
+    <!-- MODAL 7: CORE IMMUTABLE CUSTOM DIALOG SYSTEM (Replaces native alert/confirm) -->
+    <div id="custom-dialog-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full border border-stone-200 shadow-2xl space-y-4">
+            <div id="dialog-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto border">
+                <!-- Injected dynamically -->
+            </div>
+            <div class="text-center font-sans">
+                <h3 id="dialog-title" class="font-bold text-stone-900 text-base">Alert</h3>
+                <p id="dialog-message" class="text-xs text-stone-500 mt-1 leading-normal"></p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2 font-sans" id="dialog-buttons-container">
+                <!-- Injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CORE BUSINESS LOGIC ENGINES (Pure JavaScript - 100% stable!) -->
+    <script>
+        // Database Constants
+        const DB_NAME = 'BDS_DarziFlowDB_v6_BackupSecure_v5';
+        const STORE_BOOKINGS = 'bookings';
+        const STORE_TAILORS = 'tailors';
+        const DB_VERSION = 1;
+
+        // Global variables state manager
+                let storageMode = 'indexeddb'; // Declared globally to prevent strict-mode crash
+                // Global JavaScript Error Logger to Toast for debugging
+                window.addEventListener('error', function(e) {
+                    triggerToast('System Error: ' + e.message, 'error');
+                    console.error(e);
+                });
+
+                let localBookings = [];
+                let localTailors = [];
+        
+                // ==========================================================================
+                // FIREBASE CLOUD DATABASE CONFIGURATION (Option A)
+                // To sync data to the cloud, create a free Firebase project and paste keys here.
+                // If left as placeholders, the app automatically falls back to local storage!
+                // ==========================================================================
+              const firebaseConfig = {
+  apiKey: "AIzaSyB_1kly-AcoK36gl_J_Wn4ltvA9wxbxJhM",
+  authDomain: "bansal-designer-studio-e227e.firebaseapp.com",
+  projectId: "bansal-designer-studio-e227e",
+  storageBucket: "bansal-designer-studio-e227e.firebasestorage.app",
+  messagingSenderId: "328064475748",
+  appId: "1:328064475748:web:b10d1fc4de77f52701b571"
+};
+        
+                let cloudMode = false;
+                let firestoreDb = null;
+        
+                // Check if Firebase is configured
+                if (firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("YOUR_")) {
+                    try {
+                        firebase.initializeApp(firebaseConfig);
+                        firestoreDb = firebase.firestore();
+                        
+                        // Enable offline cache persistence
+                        firestoreDb.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+                            console.warn("Firestore persistence error:", err.code);
+                        });
+                        
+                        cloudMode = true;
+                        console.log("Firebase Cloud Mode enabled successfully!");
+                    } catch (err) {
+                        console.error("Firebase initialization failed:", err);
+                    }
+                }
+        let activeTab = 'dashboard';
+        let activeFilterStatus = 'All';
+        let currentSearchQuery = '';
+
+        // Form garment lists tracker
+        let activeFormGarments = [
+            {
+                id: Date.now(),
+                garmentType: 'Kurta',
+                amount: 0,
+                fabricPhoto: null,
+                tailorName: '',
+                trialDate: '',
+                deliveryDate: '',
+                status: 'At Shop Counter',
+                notes: ''
+            }
+        ];
+
+        let customerPhotoFormDraft = null;
+        let deleteTargetId = null;
+        let deleteTargetType = null; // 'booking' or 'tailor'
+
+        // Sizing presets database
+        function getSizingTemplate(type) {
+            const templates = {
+                'Kurta': 'Length: __" | Chest: __" | Waist: __" | Hip: __" | Shoulder: __" | Sleeve: __" | Neck: __"',
+                'Pant': 'Length: __" | Waist: __" | Hip: __" | Thigh: __" | Bottom: __" | Fork: __"',
+                'Shirt': 'Length: __" | Chest: __" | Collar: __" | Sleeve: __" | Shoulder: __" | Cuff: __"',
+                'Jodhpuri Suit': 'Coat Length: __" | Chest: __" | Waist: __" | Shoulder: __" | Sleeve: __" | Pant Length: __" | Pant Waist: __"',
+                'Blouse': 'Length: __" | Bust: __" | Waist: __" | Front Neck: __" | Back Neck: __" | Sleeve Length: __" | Armhole: __"',
+                'Saree Alteration': 'Length Adjustment: __" | Waist Line Alteration: __" | Falling/Pico: Yes/No'
+            };
+            return templates[type] || 'Measurements: ';
+        }
+
+        // --- IMAGE RESIZER UTILITY (CANVAS DRIVEN) ---
+        // Resizes images in-browser to prevent localStorage QuotaExceeded errors and save space.
+        function resizeImage(file, maxW, maxH) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxW) {
+                                height = Math.round((height * maxW) / width);
+                                width = maxW;
+                            }
+                        } else {
+                            if (height > maxH) {
+                                width = Math.round((width * maxH) / height);
+                                height = maxH;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7)); // Compress heavily
+                    };
+                    img.onerror = () => reject(new Error('Image loading failed'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('File reading failed'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // --- DYNAMIC CUSTOM TOAST NOTIFICATION ---
+        let toastTimeout = null;
+        function triggerToast(message, type = 'info') {
+            const toastBox = document.getElementById('toast-box');
+            const toastMessage = document.getElementById('toast-message');
+            if (!toastBox || !toastMessage) return;
+
+            toastMessage.textContent = message;
+            
+            // Adjust styles depending on type
+            if (type === 'error') {
+                toastBox.className = "fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-rose-955 text-rose-200 border border-rose-800 transition-all animate-fade-in";
+            } else if (type === 'success') {
+                toastBox.className = "fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-emerald-950 text-emerald-200 border border-emerald-800 transition-all animate-fade-in";
+            } else {
+                toastBox.className = "fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-955 text-amber-200 border border-stone-800 transition-all animate-fade-in";
+            }
+            
+            toastBox.classList.remove('hidden');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastBox.classList.add('hidden');
+            }, 3000);
+        }
+
+        // --- CALCULATE REMAINING DAYS DEADLINE ---
+        function checkDaysRemaining(dateString) {
+            if (!dateString) return 999;
+            const delivery = new Date(dateString);
+            const today = new Date();
+            delivery.setHours(0,0,0,0);
+            today.setHours(0,0,0,0);
+            const diffTime = delivery - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // --- PHONE NUMBER CLEANING & PRESENTATION HELPERS (IPAD ROBUST) ---
+        // Sanitizes inputs to prevent WhatsApp errors
+        function sanitizePhoneNumber(phone) {
+            if (!phone) return '';
+            let cleaned = phone.replace(/\D/g, ''); // Extract digits only
+            
+            if (cleaned.length === 12 && cleaned.startsWith('91')) {
+                return cleaned;
+            }
+            if (cleaned.length === 11 && cleaned.startsWith('0')) {
+                cleaned = cleaned.substring(1);
+            }
+            if (cleaned.length === 10) {
+                return '91' + cleaned;
+            }
+            return cleaned; // Fallback
+        }
+
+        // Formats number visually on UI cards for a premium feel
+                function formatPhoneForDisplay(phone) {
+                    if (!phone) return '-';
+                    let cleaned = phone.replace(/\D/g, '');
+                    if (cleaned.startsWith('91') && cleaned.length > 10) {
+                        cleaned = cleaned.substring(2);
+                    }
+                    if (cleaned.length === 10) {
+                        return `+91 ${cleaned.substring(0, 5)} ${cleaned.substring(5)}`;
+                    }
+                    return phone; // Fallback
+                }
+        
+                // Bypasses iPad Safari popup blocker and opens WhatsApp reliably
+                        function triggerWhatsAppOpen(phone, text) {
+                            const whatsappPhone = sanitizePhoneNumber(phone);
+                            const url = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(text)}`;
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.target = '_blank';
+                            a.rel = 'noopener noreferrer';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        }
+                
+                        // Calculates date 2 days prior for Tailor workshop deadlines
+                        function getTwoDaysPrior(dateString) {
+                            if (!dateString) return 'Not Scheduled';
+                            const date = new Date(dateString);
+                            if (isNaN(date.getTime())) return 'Not Scheduled';
+                            date.setDate(date.getDate() - 2);
+                            return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                        }
+
+        // --- CUSTOM MODAL DIALOG CONTROLLER (SANDBOX FRIENDLY) ---
+        function showCustomDialog({ title, message, type = 'info', confirmText = 'Confirm', onConfirm, showCancel = true }) {
+            const modal = document.getElementById('custom-dialog-modal');
+            const titleEl = document.getElementById('dialog-title');
+            const msgEl = document.getElementById('dialog-message');
+            const iconContainer = document.getElementById('dialog-icon-container');
+            const buttonsContainer = document.getElementById('dialog-buttons-container');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            if (type === 'danger') {
+                iconContainer.className = "w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto border border-rose-100";
+                iconContainer.innerHTML = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
+            } else if (type === 'warning') {
+                iconContainer.className = "w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto border border-amber-100";
+                iconContainer.innerHTML = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+            } else {
+                iconContainer.className = "w-12 h-12 bg-stone-50 text-stone-800 rounded-full flex items-center justify-center mx-auto border border-stone-200";
+                iconContainer.innerHTML = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            }
+
+            if (showCancel) {
+                buttonsContainer.innerHTML = `
+                    <button onclick="closeCustomDialog()" class="py-2.5 text-xs font-bold border border-stone-200 rounded-xl hover:bg-stone-50">Cancel</button>
+                    <button id="dialog-confirm-btn" class="py-2.5 text-xs font-bold bg-stone-900 hover:bg-stone-800 text-white rounded-xl shadow-sm">${confirmText}</button>
+                `;
+            } else {
+                buttonsContainer.innerHTML = `
+                    <button onclick="closeCustomDialog()" class="col-span-2 py-2.5 text-xs font-bold bg-stone-900 hover:bg-stone-855 text-white rounded-xl shadow-sm">${confirmText}</button>
+                `;
+            }
+
+            const confirmBtn = document.getElementById('dialog-confirm-btn');
+            confirmBtn.onclick = () => {
+                closeCustomDialog();
+                if (onConfirm) onConfirm();
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        // Close dialog
+        function closeCustomDialog() {
+            document.getElementById('custom-dialog-modal').classList.add('hidden');
+        }
+
+        // --- IMMUTABLE MULTI-SAVING DATABASE LAYER ---
+        function openIndexedDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_BOOKINGS)) {
+                        db.createObjectStore(STORE_BOOKINGS, { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!db.objectStoreNames.contains(STORE_TAILORS)) {
+                        db.createObjectStore(STORE_TAILORS, { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function dbGetAll(storeName) {
+                    let localBackup = [];
+                    try {
+                        const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
+                        if (raw) localBackup = JSON.parse(raw);
+                    } catch(e) { console.warn("Fallback backup reads block."); }
+        
+                    if (cloudMode && firestoreDb) {
+                        try {
+                            const snapshot = await firestoreDb.collection(storeName).get();
+                            const items = [];
+                            snapshot.forEach(doc => {
+                                items.push({ ...doc.data(), id: Number(doc.id) });
+                            });
+                            try {
+                                localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(items));
+                            } catch(e) {}
+                            return items;
+                        } catch (err) {
+                            console.warn("Firestore load failed, using local backup:", err);
+                            return localBackup;
+                        }
+                    }
+        
+                    if (storageMode === 'localstorage') {
+                        return localBackup;
+                    }
+        
+                    try {
+                        const db = await openIndexedDB();
+                        return new Promise((resolve, reject) => {
+                            const tx = db.transaction(storeName, 'readonly');
+                            const store = tx.objectStore(storeName);
+                            const request = store.getAll();
+                            request.onsuccess = () => {
+                                try {
+                                    localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(request.result));
+                                } catch(err) {}
+                                resolve(request.result);
+                            };
+                            request.onerror = () => resolve(localBackup);
+                        });
+                    } catch(e) {
+                        storageMode = 'localstorage';
+                        return localBackup;
+                    }
+                }
+
+        async function dbAdd(storeName, item) {
+                    if (storeName === STORE_BOOKINGS) {
+                        let maxId = 1000;
+                        localBookings.forEach(b => {
+                            const numId = Number(b.id);
+                            if (!isNaN(numId) && numId > maxId) {
+                                maxId = numId;
+                            }
+                        });
+                        item.id = maxId + 1;
+                    } else if (storeName === STORE_TAILORS) {
+                        let maxId = 0;
+                        localTailors.forEach(t => {
+                            const numId = Number(t.id);
+                            if (!isNaN(numId) && numId > maxId) {
+                                maxId = numId;
+                            }
+                        });
+                        item.id = maxId + 1;
+                    } else {
+                        item.id = Date.now() + Math.floor(Math.random() * 1000);
+                    }
+                    try {
+                        let localBackup = [];
+                        const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
+                        if (raw) localBackup = JSON.parse(raw);
+                        localBackup.push(item);
+                        localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(localBackup));
+                    } catch(e) {}
+        
+                    if (cloudMode && firestoreDb) {
+                        try {
+                            await firestoreDb.collection(storeName).doc(item.id.toString()).set(item);
+                            return item.id;
+                        } catch (err) {
+                            console.error("Firestore add failed, proceeding to fallback:", err);
+                        }
+                    }
+        
+                    if (storageMode === 'localstorage') {
+                        return item.id;
+                    }
+        
+                    try {
+                        const db = await openIndexedDB();
+                        return new Promise((resolve, reject) => {
+                            const tx = db.transaction(storeName, 'readwrite');
+                            const store = tx.objectStore(storeName);
+                            const request = store.add(item);
+                            request.onsuccess = () => resolve(request.result);
+                            request.onerror = (e) => reject(e.target.error);
+                        });
+                    } catch(e) {
+                        storageMode = 'localstorage';
+                        return item.id;
+                    }
+                }
+
+        async function dbUpdate(storeName, item) {
+                    try {
+                        let localBackup = [];
+                        const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
+                        if (raw) localBackup = JSON.parse(raw);
+                        localBackup = localBackup.map(x => x.id === item.id ? item : x);
+                        localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(localBackup));
+                    } catch(e) {}
+        
+                    if (cloudMode && firestoreDb) {
+                        try {
+                            await firestoreDb.collection(storeName).doc(item.id.toString()).set(item);
+                            return;
+                        } catch (err) {
+                            console.error("Firestore update failed:", err);
+                        }
+                    }
+        
+                    if (storageMode === 'localstorage') {
+                        return;
+                    }
+        
+                    try {
+                        const db = await openIndexedDB();
+                        return new Promise((resolve, reject) => {
+                            const tx = db.transaction(storeName, 'readwrite');
+                            const store = tx.objectStore(storeName);
+                            const request = store.put(item);
+                            request.onsuccess = () => resolve();
+                            request.onerror = (e) => reject(e.target.error);
+                        });
+                    } catch(e) {
+                        storageMode = 'localstorage';
+                    }
+                }
+
+        async function dbDelete(storeName, id) {
+                    try {
+                        let localBackup = [];
+                        const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
+                        if (raw) localBackup = JSON.parse(raw);
+                        localBackup = localBackup.filter(x => x.id !== id);
+                        localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(localBackup));
+                    } catch(e) {}
+        
+                    if (cloudMode && firestoreDb) {
+                        try {
+                            await firestoreDb.collection(storeName).doc(id.toString()).delete();
+                            return;
+                        } catch (err) {
+                            console.error("Firestore delete failed:", err);
+                        }
+                    }
+        
+                    if (storageMode === 'localstorage') {
+                        return;
+                    }
+        
+                    try {
+                        const db = await openIndexedDB();
+                        return new Promise((resolve, reject) => {
+                            const tx = db.transaction(storeName, 'readwrite');
+                            const store = tx.objectStore(storeName);
+                            const request = store.delete(id);
+                            request.onsuccess = () => resolve();
+                            request.onerror = (e) => reject(e.target.error);
+                        });
+                    } catch(e) {
+                        storageMode = 'localstorage';
+                    }
+                }
+
+        // --- BACKUP & RESTORE DATABASE ENGINE (IPAD SAFE BLOB EXPORT) ---
+                // Generates structured Excel CSV table and downloads it
+                function exportToExcel() {
+                    if (localBookings.length === 0) {
+                        triggerToast('No active bookings to export.', 'error');
+                        return;
+                    }
+        
+                    const headers = [
+                        "Folder ID",
+                        "Booking Date",
+                        "Customer Name",
+                        "Customer Phone",
+                        "Function Date",
+                        "Combined Bill (Rs)",
+                        "Advance Paid (Rs)",
+                        "Outstanding Due (Rs)",
+                        "Garment No",
+                        "Garment Type",
+                        "Garment Price (Rs)",
+                        "Tailor Name",
+                        "Trial Date",
+                        "Delivery Date",
+                        "Garment Status",
+                        "Garment Notes"
+                    ];
+        
+                    let csvContent = "\uFEFF"; // Add BOM for Excel UTF-8 display compatibility
+                    csvContent += headers.map(h => `"${h.replace(/"/g, '""')}"`).join(",") + "\n";
+        
+                    localBookings.forEach(b => {
+                        const balance = b.totalBill - b.advancePaid;
+                        const dateVal = b.bookingDate || '';
+                        
+                        b.garments.forEach((g, idx) => {
+                            const row = [
+                                b.id,
+                                dateVal,
+                                b.customerName,
+                                b.customerPhone,
+                                b.functionDate || 'N/A',
+                                b.totalBill,
+                                b.advancePaid,
+                                balance,
+                                idx + 1,
+                                g.garmentType,
+                                g.amount || 0,
+                                g.tailorName || 'Counter',
+                                g.trialDate || 'N/A',
+                                g.deliveryDate,
+                                g.status,
+                                g.notes || ''
+                            ];
+                            
+                            csvContent += row.map(val => {
+                                const strVal = String(val);
+                                return `"${strVal.replace(/"/g, '""')}"`;
+                            }).join(",") + "\n";
+                        });
+                    });
+        
+                    try {
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.setAttribute("href", url);
+                        downloadLink.setAttribute("download", `BDS_Ledger_Export_${new Date().toISOString().split('T')[0]}.csv`);
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        downloadLink.remove();
+                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                        triggerToast('Excel CSV exported successfully!', 'success');
+                    } catch (err) {
+                        triggerToast('Excel export failed.', 'error');
+                    }
+                }
+        
+                function exportDatabaseBackup() {
+            if (localBookings.length === 0 && localTailors.length === 0) {
+                triggerToast('No active records to backup.', 'error');
+                return;
+            }
+            const fullDBBundle = {
+                bookings: localBookings,
+                tailors: localTailors,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                const blob = new Blob([JSON.stringify(fullDBBundle, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const downloadLink = document.createElement('a');
+                downloadLink.setAttribute("href", url);
+                downloadLink.setAttribute("download", `BDS_Ledger_Backup_${new Date().toISOString().split('T')[0]}.json`);
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                downloadLink.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+                triggerToast('Backup JSON downloaded successfully!', 'success');
+            } catch(err) {
+                triggerToast('Backup export failed.', 'error');
+            }
+        }
+
+        function triggerImportSelection() {
+            document.getElementById('import-db-file').click();
+        }
+
+        async function importDatabaseBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const bundle = JSON.parse(e.target.result);
+                    if (!bundle.bookings || !bundle.tailors) {
+                        triggerToast('Invalid backup file structure.', 'error');
+                        return;
+                    }
+
+                    showCustomDialog({
+                        title: "Restore Ledger Database?",
+                        message: "This will merge and replace imported records onto your local database storage.",
+                        type: "warning",
+                        confirmText: "Yes, Restore",
+                        onConfirm: async () => {
+                            const db = await openIndexedDB();
+                            
+                            // Streamlined unified write transactions
+                            const tx = db.transaction([STORE_BOOKINGS, STORE_TAILORS], 'readwrite');
+                            const bStore = tx.objectStore(STORE_BOOKINGS);
+                            const tStore = tx.objectStore(STORE_TAILORS);
+                            
+                            bStore.clear();
+                            tStore.clear();
+                            
+                            bundle.bookings.forEach(b => bStore.add(b));
+                            bundle.tailors.forEach(t => tStore.add(t));
+                            
+                            tx.oncomplete = async () => {
+                                localStorage.setItem(`BDS_BackRedundancy_${STORE_BOOKINGS}`, JSON.stringify(bundle.bookings));
+                                localStorage.setItem(`BDS_BackRedundancy_${STORE_TAILORS}`, JSON.stringify(bundle.tailors));
+                                
+                                localBookings = bundle.bookings;
+                                localTailors = bundle.tailors;
+
+                                renderDashboard();
+                                renderLedger();
+                                renderTailors();
+                                triggerToast('Ledger database restored successfully!', 'success');
+                            };
+                            tx.onerror = () => {
+                                triggerToast('Restore transaction failed.', 'error');
+                            };
+                        }
+                    });
+                } catch(err) {
+                    triggerToast('Could not parse database file.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- LIFECYCLE INITIALIZER ---
+                window.addEventListener('DOMContentLoaded', async () => {
+                    try {
+                        if (!window.indexedDB) {
+                            storageMode = 'localstorage';
+                        }
+                    } catch(e) {
+                        storageMode = 'localstorage';
+                    }
+                    await initializeBDSData();
+                    
+                    // Notify cloud vs local storage state
+                    if (cloudMode) {
+                        triggerToast('Connected to Firebase Cloud Storage!', 'success');
+                    } else {
+                        triggerToast('Local Offline Storage Active. Set Firebase keys to sync!', 'info');
+                    }
+                });
+
+        async function initializeBDSData() {
+            try {
+                if (cloudMode && firestoreDb) {
+                    // Set up real-time listener for BOOKINGS
+                    firestoreDb.collection(STORE_BOOKINGS).onSnapshot(snapshot => {
+                        const items = [];
+                        snapshot.forEach(doc => {
+                            items.push({ ...doc.data(), id: Number(doc.id) });
+                        });
+                        localBookings = items;
+                        localBookings.sort((a,b) => b.id - a.id);
+                        
+                        // Migration layer: guarantee every garment row has a valid unique ID and amount field
+                        localBookings.forEach(b => {
+                            if (!b.garments) b.garments = [];
+                            b.garments.forEach((g, idx) => {
+                                if (!g.id) {
+                                    g.id = Date.now() + idx + Math.floor(Math.random() * 1000);
+                                }
+                                if (g.amount === undefined) {
+                                    g.amount = 0;
+                                }
+                            });
+                        });
+                        
+                        try {
+                            localStorage.setItem(`BDS_BackRedundancy_${STORE_BOOKINGS}`, JSON.stringify(localBookings));
+                        } catch(e) {}
+                        
+                        renderDashboard();
+                        renderLedger();
+                    }, err => {
+                        console.error("Firestore bookings sync error:", err);
+                    });
+
+                    // Set up real-time listener for TAILORS
+                    firestoreDb.collection(STORE_TAILORS).onSnapshot(snapshot => {
+                        const items = [];
+                        snapshot.forEach(doc => {
+                            items.push({ ...doc.data(), id: Number(doc.id) });
+                        });
+                        localTailors = items;
+                        
+                        if (localTailors.length === 0) {
+                            const seeds = [
+                                { id: 1, name: 'Aslam Bhai', phone: '9876543210', specialty: 'Sherwanis & Suits' },
+                                { id: 2, name: 'Sohan Lal Master', phone: '9123456789', specialty: 'Kurtas & Shirts' },
+                                { id: 3, name: 'Verma Boutique Craft', phone: '8877665544', specialty: 'Blouses & Saree Alterations' }
+                            ];
+                            for (let t of seeds) {
+                                dbAdd(STORE_TAILORS, t);
+                            }
+                            localTailors = seeds;
+                        }
+                        
+                        try {
+                            localStorage.setItem(`BDS_BackRedundancy_${STORE_TAILORS}`, JSON.stringify(localTailors));
+                        } catch(e) {}
+                        
+                        renderTailors();
+                    }, err => {
+                        console.error("Firestore tailors sync error:", err);
+                    });
+                } else {
+                    localBookings = await dbGetAll(STORE_BOOKINGS);
+                    localTailors = await dbGetAll(STORE_TAILORS);
+
+                    // Migration layer: guarantee every garment row has a valid unique ID and amount field
+                    localBookings.forEach(b => {
+                        if (!b.garments) b.garments = [];
+                        b.garments.forEach((g, idx) => {
+                            if (!g.id) {
+                                g.id = Date.now() + idx + Math.floor(Math.random() * 1000);
+                            }
+                            if (g.amount === undefined) {
+                                g.amount = 0;
+                            }
+                        });
+                    });
+
+                    if (localTailors.length === 0) {
+                        const seeds = [
+                            { id: 1, name: 'Aslam Bhai', phone: '9876543210', specialty: 'Sherwanis & Suits' },
+                            { id: 2, name: 'Sohan Lal Master', phone: '9123456789', specialty: 'Kurtas & Shirts' },
+                            { id: 3, name: 'Verma Boutique Craft', phone: '8877665544', specialty: 'Blouses & Saree Alterations' }
+                        ];
+                        for (let t of seeds) {
+                            await dbAdd(STORE_TAILORS, t);
+                        }
+                        localTailors = seeds;
+                    }
+
+                    localBookings.sort((a,b) => b.id - a.id);
+
+                    renderDashboard();
+                    renderLedger();
+                    renderTailors();
+                }
+            } catch (err) {
+                console.error("Database boot failure:", err);
+                triggerToast('Could not load offline database.', 'error');
+            }
+        }
+
+        // Status Styles Mapper Helper
+        function getStatusClass(status) {
+            switch(status) {
+                case 'At Shop Counter': return 'status-intake';
+                case 'With Tailor': return 'status-workshop';
+                case 'Ready for Pickup': return 'status-ready';
+                case 'Completed & Delivered': return 'status-delivered';
+                default: return 'bg-stone-50 text-stone-500';
+            }
+        }
+
+        // Navigation Tabs Engine
+        function switchTab(tabName, optionStatusFilter = 'All') {
+            activeTab = tabName;
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-bookings').classList.add('hidden');
+            document.getElementById('view-tailors').classList.add('hidden');
+
+            const tabs = ['dashboard', 'bookings', 'tailors'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                btn.className = "px-5 py-2.5 rounded-lg text-xs font-bold transition-all text-stone-500 hover:text-stone-950";
+            });
+
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).className = "px-5 py-2.5 rounded-lg text-xs font-bold transition-all bg-stone-950 text-white shadow-sm border border-stone-900";
+
+            if (tabName === 'bookings') {
+                setStatusFilter(optionStatusFilter);
+            }
+        }
+
+        // --- DASHBOARD RENDERER ---
+        function renderDashboard() {
+            let awaits = 0;
+            let outs = 0;
+            let readys = 0;
+
+            localBookings.forEach(b => {
+                b.garments.forEach(g => {
+                    if (g.status === 'At Shop Counter') awaits++;
+                    if (g.status === 'With Tailor') outs++;
+                    if (g.status === 'Ready for Pickup') readys++;
+                });
+            });
+
+            document.getElementById('count-awaiting').textContent = awaits;
+            document.getElementById('count-outsourced').textContent = outs;
+            document.getElementById('count-ready').textContent = readys;
+
+            let pendingCash = 0;
+                        localBookings.forEach(b => {
+                            const balance = b.totalBill - b.advancePaid;
+                            if (balance > 0) {
+                                pendingCash += balance;
+                            }
+                        });
+            document.getElementById('sum-revenue').textContent = '₹' + pendingCash.toLocaleString('en-IN');
+            document.getElementById('badge-total-bookings').textContent = localBookings.length;
+
+            const container = document.getElementById('dashboard-timeline-feed');
+            container.innerHTML = '';
+
+            const urgentTimelineItems = [];
+            localBookings.forEach(b => {
+                b.garments.forEach(g => {
+                    if (g.status !== 'Completed & Delivered') {
+                        const daysLeft = checkDaysRemaining(g.deliveryDate);
+                        if (daysLeft <= 10) {
+                            urgentTimelineItems.push({ garment: g, booking: b, daysLeft });
+                        }
+                    }
+                });
+            });
+
+            urgentTimelineItems.sort((a,b) => a.daysLeft - b.daysLeft);
+
+            if (urgentTimelineItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-xs text-stone-400 font-bold font-mono">
+                        No immediate Trial or Delivery deadlines recorded in the next 10 days.
+                    </div>
+                `;
+                return;
+            }
+
+            urgentTimelineItems.forEach(item => {
+                const overDays = Math.abs(item.daysLeft);
+                let labelStyle = "";
+                let labelText = "";
+
+                if (item.daysLeft < 0) {
+                    labelStyle = "bg-rose-50 text-rose-700 border-rose-200";
+                    labelText = `OVERDUE BY ${overDays} DAYS`;
+                } else if (item.daysLeft === 0) {
+                    labelStyle = "bg-amber-50 text-amber-700 border-amber-200";
+                    labelText = `COLLECT TODAY`;
+                } else {
+                    labelStyle = "bg-stone-100 text-stone-800 border-stone-200";
+                    labelText = `${item.daysLeft} DAYS LEFT`;
+                }
+
+                const faceIcon = item.booking.customerPhoto 
+                    ? `<img src="${item.booking.customerPhoto}" class="w-11 h-11 rounded-full object-cover border border-stone-200" />`
+                    : `<div class="w-11 h-11 rounded-full bg-stone-100 border border-stone-300 flex items-center justify-center font-bold text-xs text-stone-700">${item.booking.customerName.charAt(0)}</div>`;
+
+                const row = document.createElement('div');
+                row.className = "p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 font-sans";
+                row.innerHTML = `
+                    <div class="flex gap-4 items-center">
+                        ${faceIcon}
+                        <div>
+                            <div class="font-bold text-stone-900 text-sm">${item.booking.customerName}</div>
+                            <div class="flex flex-wrap items-center gap-2 mt-1">
+                                <span class="text-[9px] font-bold text-stone-800 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">${item.garment.garmentType}</span>
+                                <span class="text-xs text-stone-500 font-medium">• Master: <strong class="text-stone-700 font-bold">${item.garment.tailorName || 'Unassigned'}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-bold bg-stone-50 p-2.5 rounded-xl border border-stone-200 max-w-sm w-full font-mono">
+                        <div class="border-r border-stone-200">
+                            <span class="text-[8px] text-stone-400 block uppercase font-mono">1st Fitting</span>
+                            <span class="text-stone-900 block mt-0.5">${item.garment.trialDate || 'N/A'}</span>
+                        </div>
+                        <div class="border-r border-stone-200">
+                            <span class="text-[8px] text-stone-700 block uppercase font-mono font-bold">2nd Delivery</span>
+                            <span class="text-stone-900 block mt-0.5">${item.garment.deliveryDate}</span>
+                        </div>
+                        <div>
+                            <span class="text-[8px] text-stone-400 block uppercase font-mono">3rd Function</span>
+                            <span class="text-stone-900 block mt-0.5">${item.booking.functionDate || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+                        <span class="text-[9px] font-black border px-3 py-1.5 rounded-md ${labelStyle}">${labelText}</span>
+                        <button onclick="directTailorWhatsApp(${item.booking.id}, ${item.garment.id})" class="btn-dark text-[10px] py-2 px-3 rounded-lg flex items-center gap-1 shadow">
+                            <span>Ping Tailor</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // --- QUICK status change update ---
+        async function quickUpdateGarmentStatus(bookingId, garmentId, newStatus) {
+            const booking = localBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            booking.garments = booking.garments.map(g => g.id === garmentId ? { ...g, status: newStatus } : g);
+            try {
+                await dbUpdate(STORE_BOOKINGS, booking);
+                renderDashboard();
+                renderLedger();
+                triggerToast('Garment status updated successfully!', 'success');
+            } catch(e) {
+                triggerToast('Could not update status.', 'error');
+            }
+        }
+
+        // --- LEDGER INDEX RENDERER ---
+        function setStatusFilter(status) {
+            activeFilterStatus = status;
+            const pills = document.querySelectorAll('.filter-pill');
+            pills.forEach(p => {
+                p.className = "filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-50 text-stone-600 border-stone-200";
+            });
+
+            const targetPillId = `filter-${status.replace(/ /g, '-').replace(/&/g, '')}`;
+            const activePill = document.getElementById(targetPillId);
+            if (activePill) {
+                activePill.className = "filter-pill px-3.5 py-2 rounded-xl text-[10px] font-black border transition-all bg-stone-900 text-white border-transparent";
+            }
+            renderLedger();
+        }
+
+        function triggerSearch() {
+            currentSearchQuery = document.getElementById('search-input').value;
+            renderLedger();
+        }
+
+        function renderLedger() {
+            const container = document.getElementById('bookings-cards-grid');
+            container.innerHTML = '';
+
+            const results = localBookings.filter(b => {
+                const query = currentSearchQuery.toLowerCase();
+                const matchesSearch = 
+                    b.customerName.toLowerCase().includes(query) ||
+                    b.customerPhone.includes(query) ||
+                    b.id.toString().includes(query) ||
+                    b.garments.some(g => g.garmentType.toLowerCase().includes(query) || (g.tailorName && g.tailorName.toLowerCase().includes(query)));
+
+                if (activeFilterStatus === 'All') return matchesSearch;
+                return matchesSearch && b.garments.some(g => g.status === activeFilterStatus);
+            });
+
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white p-16 text-center rounded-3xl border border-stone-200 max-w-md mx-auto mt-6 animate-fade-in font-sans">
+                        <svg class="w-10 h-10 text-stone-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <h3 class="font-bold text-stone-800 mt-4 text-base">No Sizing Files Found</h3>
+                        <p class="text-stone-400 text-xs mt-1">Try resetting your search query filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            results.forEach(b => {
+                const balance = b.totalBill - b.advancePaid;
+                const face = b.customerPhoto 
+                    ? `<img src="${b.customerPhoto}" class="w-12 h-12 rounded-full object-cover border border-stone-200" />`
+                    : `<div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center font-extrabold border border-stone-300 text-stone-600">${b.customerName.charAt(0)}</div>`;
+
+                let clothesLogHtml = '';
+                b.garments.forEach((g, idx) => {
+                    const snapImg = g.fabricPhoto 
+                        ? `<img src="${g.fabricPhoto}" class="w-11 h-11 rounded-xl object-cover border border-stone-200" />`
+                        : `<div class="w-11 h-11 rounded-xl bg-stone-50 border border-stone-200 border-dashed flex items-center justify-center text-stone-400"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /></svg></div>`;
+
+                    const statusClass = getStatusClass(g.status);
+
+                    clothesLogHtml += `
+                        <div class="p-3.5 rounded-2xl border border-stone-200/80 space-y-3 bg-stone-50/50 hover:border-stone-400 transition-all font-sans">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold bg-stone-900 text-white px-2.5 py-0.5 rounded-lg">${g.garmentType}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusClass}">${g.status}</span>
+                            </div>
+                            <div class="flex gap-3">
+                                ${snapImg}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-extrabold text-stone-900 font-mono">Price: ₹${(g.amount || 0).toLocaleString('en-IN')}</p>
+                                    <div class="flex items-center justify-between text-[9px] text-stone-500 mt-1.5 font-bold font-mono">
+                                        <span>Master: ${g.tailorName || 'None'}</span>
+                                        <span>Delivery: ${g.deliveryDate}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="segmented-control mt-2.5">
+                                <button onclick="quickUpdateGarmentStatus(${b.id}, ${g.id}, 'At Shop Counter')" class="segmented-btn ${g.status === 'At Shop Counter' ? 'active-intake' : 'inactive'}">Intake</button>
+                                <button onclick="quickUpdateGarmentStatus(${b.id}, ${g.id}, 'With Tailor')" class="segmented-btn ${g.status === 'With Tailor' ? 'active-workshop' : 'inactive'}">Workshop</button>
+                                <button onclick="quickUpdateGarmentStatus(${b.id}, ${g.id}, 'Ready for Pickup')" class="segmented-btn ${g.status === 'Ready for Pickup' ? 'active-ready' : 'inactive'}">Ready</button>
+                                <button onclick="quickUpdateGarmentStatus(${b.id}, ${g.id}, 'Completed & Delivered')" class="segmented-btn ${g.status === 'Completed & Delivered' ? 'active-delivered' : 'inactive'}">Deliver</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const displayPhone = formatPhoneForDisplay(b.customerPhone);
+
+                const card = document.createElement('div');
+                card.className = "premium-card flex flex-col justify-between overflow-hidden group animate-fade-in";
+                card.innerHTML = `
+                    <div class="p-6 border-b border-stone-200 bg-stone-50/50 flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            ${face}
+                            <div class="cursor-pointer text-left" onclick="openLedgerDrawer(${b.id})">
+                                <span class="text-[9px] font-black tracking-widest text-stone-400 block uppercase font-mono">FOLDER #${b.id}</span>
+                                <h3 class="font-bold text-stone-900 text-sm mt-0.5 hover:underline">${b.customerName}</h3>
+                                <span class="text-[11px] font-semibold text-stone-400 font-mono">${displayPhone}</span>
+                            </div>
+                        </div>
+                        <div class="text-right font-mono">
+                            <span class="text-[8px] text-stone-400 font-bold block uppercase tracking-wider">Event Date</span>
+                            <span class="text-xs font-bold text-stone-800">${b.functionDate || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-6 space-y-4 flex-1 bg-white">
+                        <div class="space-y-4">
+                            ${clothesLogHtml}
+                        </div>
+                        <div class="flex justify-between items-center text-xs pt-4 border-t border-stone-200 font-sans">
+                            <div>
+                                <span class="text-stone-400 block uppercase text-[8px] font-bold">Total Bill:</span>
+                                <span class="font-bold text-stone-950">₹${b.totalBill.toLocaleString('en-IN')}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-stone-400 block uppercase text-[8px] font-bold text-rose-500">Outstanding Due:</span>
+                                <span class="font-bold text-rose-600 font-mono">₹${balance.toLocaleString('en-IN')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50/80 border-t border-stone-200 px-6 py-4 flex items-center justify-between gap-3 font-sans">
+                        <div class="flex flex-col items-start gap-1">
+                            <button onclick="openLedgerDrawer(${b.id})" class="text-stone-900 hover:underline text-xs font-bold flex items-center gap-1">
+                                <span>Open Sizing Drawer</span>
+                            </button>
+                            <button onclick="openInvoiceModal(${b.id})" class="text-stone-500 hover:text-stone-900 hover:underline text-[10px] font-semibold flex items-center gap-1 font-mono">
+                                <span>🧾 Generate Digital Invoice</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="triggerPhoneCall('${b.customerPhone}')" class="p-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-100 transition-all shadow-sm"><svg class="w-3.5 h-3.5 text-stone-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg></button>
+                            <button onclick="triggerCalendarSync(${b.id})" class="p-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-100 transition-all shadow-sm"><svg class="w-3.5 h-3.5 text-stone-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></button>
+                            <button onclick="triggerWhatsAppConfirmation(${b.id})" class="text-[9px] font-bold bg-white border border-stone-200 px-3 py-2 rounded-xl hover:bg-stone-100 transition-all shadow-sm">WhatsApp</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- PARTNERS LIST RENDERER ---
+        function renderTailors() {
+            const container = document.getElementById('tailors-cards-grid');
+            container.innerHTML = '';
+
+            localTailors.forEach(t => {
+                let loadCount = 0;
+                localBookings.forEach(b => {
+                    loadCount += b.garments.filter(g => g.tailorName === t.name && g.status === 'With Tailor').length;
+                });
+
+                const displayPhone = formatPhoneForDisplay(t.phone);
+
+                const card = document.createElement('div');
+                card.className = "premium-card p-6 flex flex-col justify-between hover:shadow-md transition-all animate-fade-in";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-stone-900 text-white font-bold p-3 rounded-2xl h-11 w-11 flex items-center justify-center text-sm shadow border border-stone-800">${t.name.charAt(0)}</div>
+                            <div>
+                                <h3 class="font-bold text-stone-950 text-base">${t.name}</h3>
+                                <span class="text-[9px] font-bold text-stone-500 bg-stone-100 border border-stone-200 px-2 py-0.5 rounded font-mono uppercase tracking-wide">${t.specialty || 'General Tailoring'}</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 space-y-3 text-xs font-semibold text-stone-600 font-mono">
+                            <div class="flex items-center justify-between">
+                                <span>Phone Line:</span>
+                                <span class="text-stone-900 font-bold font-mono">${displayPhone}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Active Load:</span>
+                                <span class="bg-stone-100 text-stone-900 px-2.5 py-0.5 rounded text-[10px] font-bold border border-stone-200 font-mono">${loadCount} garments active</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-stone-200 flex items-center gap-2 font-sans">
+                        <button onclick="triggerPhoneCall('${t.phone}')" class="flex-1 bg-stone-50 hover:bg-stone-100 border border-stone-200 p-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 text-stone-600 transition-colors shadow-sm font-sans">Call Line</button>
+                        <button onclick="pingTailorWorkshopWhatsApp(${t.id})" class="flex-1 btn-dark p-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow">WhatsApp</button>
+                        <button onclick="requestDeleteTailor(${t.id})" class="text-stone-400 hover:text-rose-600 p-2.5 rounded-xl border border-transparent transition-all"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+
+        // --- MULTIPLE GARMENTS LIST INTENDED FORM LOGIC ---
+        function generateFormGarmentsRowsHTML() {
+            const container = document.getElementById('garments-row-container');
+            container.innerHTML = '';
+
+            activeFormGarments.forEach((g, idx) => {
+                const row = document.createElement('div');
+                row.className = "p-6 rounded-2xl border border-stone-200 bg-white relative space-y-4 shadow-sm animate-fade-in text-left font-sans";
+                
+                let tailorOptions = `<option value="">Keep in Shop Counter</option>`;
+                localTailors.forEach(t => {
+                    tailorOptions += `<option value="${t.name}" ${g.tailorName === t.name ? 'selected' : ''}>${t.name} (${t.specialty || 'Workshop'})</option>`;
+                });
+
+                const fabricProofHTML = g.fabricPhoto 
+                    ? `<div class="relative">
+                            <img src="${g.fabricPhoto}" class="w-14 h-14 rounded-xl object-cover border-2 border-stone-300" />
+                            <button type="button" onclick="clearFormGarmentFabric(${g.id})" class="absolute -top-1 -right-1 bg-stone-900 text-white rounded-full p-1"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                       </div>`
+                    : `<label class="w-14 h-14 rounded-xl bg-stone-50 border border-dashed border-stone-300 flex flex-col items-center justify-center text-stone-500 cursor-pointer hover:border-stone-500 hover:bg-stone-100 transition-colors">
+                            <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" /></svg>
+                            <span class="text-[7px] uppercase font-bold mt-1">Fabric Snap</span>
+                            <input type="file" accept="image/*" capture="environment" onchange="uploadGarmentFabricFile(${g.id}, event)" class="hidden" />
+                       </label>`;
+
+                const isCustomType = (g.garmentType !== 'Kurta' && g.garmentType !== 'Pant' && g.garmentType !== 'Shirt' && g.garmentType !== 'Jodhpuri Suit' && g.garmentType !== 'Blouse' && g.garmentType !== 'Saree Alteration');
+                const customGarmentInputHTML = (g.garmentType === 'Others' || isCustomType)
+                    ? `<div class="mt-2 font-sans">
+                            <label class="block text-[9px] font-black text-stone-400 uppercase tracking-wider mb-1">Write Custom Garment Name</label>
+                            <input type="text" placeholder="e.g. Sherwani, Lehenga, Jacket" value="${isCustomType ? g.garmentType : ''}" oninput="updateCustomGarmentNameText(${g.id}, this.value)" class="w-full bg-white px-3 py-2 rounded-lg border border-stone-200 text-xs font-bold text-stone-900" />
+                       </div>`
+                    : '';
+
+                row.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                        <span class="text-xs font-bold uppercase text-stone-500 font-mono">Clothing Item #${idx+1}</span>
+                        ${activeFormGarments.length > 1 ? `<button type="button" onclick="deleteFormGarmentRow(${g.id})" class="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 font-mono">Remove Row</button>` : ''}
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Garment Preset Type</label>
+                                <select onchange="updateFormGarmentPreset(${g.id}, this.value)" class="w-full bg-stone-50 px-3 py-2.5 rounded-xl border border-stone-200 text-xs font-bold text-stone-800">
+                                    <option value="Kurta" ${g.garmentType === 'Kurta' ? 'selected' : ''}>Kurta</option>
+                                    <option value="Pant" ${g.garmentType === 'Pant' ? 'selected' : ''}>Pant</option>
+                                    <option value="Shirt" ${g.garmentType === 'Shirt' ? 'selected' : ''}>Shirt</option>
+                                    <option value="Jodhpuri Suit" ${g.garmentType === 'Jodhpuri Suit' ? 'selected' : ''}>Jodhpuri Suit</option>
+                                    <option value="Blouse" ${g.garmentType === 'Blouse' ? 'selected' : ''}>Blouse</option>
+                                    <option value="Saree Alteration" ${g.garmentType === 'Saree Alteration' ? 'selected' : ''}>Saree Alteration</option>
+                                    <option value="Others" ${isCustomType ? 'selected' : ''}>Others (Write Custom Sizing)</option>
+                                </select>
+                                ${customGarmentInputHTML}
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Fabric Snap Image</label>
+                                <div class="flex items-center gap-3">
+                                    ${fabricProofHTML}
+                                    <p class="text-[10px] text-stone-400 leading-normal max-w-[150px] font-medium">Capture fabric roll or design pattern.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Garment Price Amount (₹) *</label>
+                                <input type="number" placeholder="e.g. 5000" value="${g.amount || ''}" oninput="updateFormGarmentAmount(${g.id}, this.value)" class="w-full bg-stone-50 px-4 py-2.5 rounded-xl border border-stone-200 text-sm font-semibold text-stone-900 focus:ring-1 focus:ring-stone-500 outline-none" />
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Outsource Workshop Partner</label>
+                                <select onchange="updateFormGarmentVal(${g.id}, 'tailorName', this.value)" class="w-full bg-stone-50 px-3 py-2.5 rounded-xl border border-stone-200 text-xs font-bold text-stone-800">
+                                    ${tailorOptions}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 space-y-3 font-mono">
+                                <span class="text-[9px] font-bold uppercase text-stone-500 block tracking-wider font-mono">Milestone Dates</span>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-stone-600 mb-0.5">1st Fitting (Trial Date)</label>
+                                    <input type="date" value="${g.trialDate}" onchange="updateFormGarmentVal(${g.id}, 'trialDate', this.value)" class="w-full bg-white px-2 py-1.5 rounded-lg border border-stone-200 text-xs font-semibold text-stone-700" />
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-stone-600 mb-0.5">2nd Final Delivery Date *</label>
+                                    <input type="date" value="${g.deliveryDate}" onchange="updateFormGarmentVal(${g.id}, 'deliveryDate', this.value)" class="w-full bg-white px-2 py-1.5 rounded-lg border border-stone-200 text-xs font-semibold text-stone-700" />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Item Alteration Remarks</label>
+                                <input type="text" placeholder="e.g. Back zipper, velvet borders, padding..." value="${g.notes}" oninput="updateFormGarmentVal(${g.id}, 'notes', this.value)" class="w-full bg-stone-50 px-3 py-2.5 rounded-xl border border-stone-200 text-xs font-semibold text-stone-900" />
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Sizing form presets modifier
+        function updateCustomGarmentNameText(id, value) {
+            activeFormGarments = activeFormGarments.map(g => {
+                if (g.id === id) {
+                    return { ...g, garmentType: value };
+                }
+                return g;
+            });
+        }
+
+        // Intake sheet form state modifiers
+        function addNewGarmentRow() {
+            const nextId = Date.now() + Math.floor(Math.random() * 1000);
+            activeFormGarments.push({
+                id: nextId,
+                garmentType: 'Kurta',
+                amount: 0,
+                fabricPhoto: null,
+                tailorName: '',
+                trialDate: '',
+                deliveryDate: '',
+                status: 'At Shop Counter',
+                notes: ''
+            });
+            generateFormGarmentsRowsHTML();
+        }
+
+        function deleteFormGarmentRow(id) {
+            activeFormGarments = activeFormGarments.filter(g => g.id !== id);
+            generateFormGarmentsRowsHTML();
+        }
+
+        function updateFormGarmentPreset(id, type) {
+            activeFormGarments = activeFormGarments.map(g => {
+                if (g.id === id) {
+                    if (type === 'Others') {
+                        return { ...g, garmentType: 'Custom Garment' };
+                    }
+                    return { ...g, garmentType: type };
+                }
+                return g;
+            });
+            generateFormGarmentsRowsHTML();
+        }
+
+        function updateFormGarmentVal(id, key, val) {
+            activeFormGarments = activeFormGarments.map(g => {
+                if (g.id === id) {
+                    return { ...g, [key]: val };
+                }
+                return g;
+            });
+        }
+
+        // Update price amount for garment in intake form and auto-update total combined bill
+        function updateFormGarmentAmount(id, val) {
+            const num = Number(val) || 0;
+            activeFormGarments = activeFormGarments.map(g => {
+                if (g.id === id) {
+                    return { ...g, amount: num };
+                }
+                return g;
+            });
+            // Auto sum total bill
+            const total = activeFormGarments.reduce((sum, g) => sum + g.amount, 0);
+            document.getElementById('form-total-bill').value = total || '';
+        }
+
+        // File/Snapshot uploader for form garments (WITH CANVAS RESIZER COMPRESSION)
+        async function uploadGarmentFabricFile(id, e) {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const compressedBase64 = await resizeImage(file, 400, 400); // 400px sizing is perfect for fabric proof
+                    activeFormGarments = activeFormGarments.map(g => {
+                        if (g.id === id) {
+                            return { ...g, fabricPhoto: compressedBase64 };
+                        }
+                        return g;
+                    });
+                    generateFormGarmentsRowsHTML();
+                } catch(err) {
+                    triggerToast('Fabric photo resize failed.', 'error');
+                }
+            }
+        }
+
+        function clearFormGarmentFabric(id) {
+            activeFormGarments = activeFormGarments.map(g => {
+                if (g.id === id) {
+                    return { ...g, fabricPhoto: null };
+                }
+                return g;
+            });
+            generateFormGarmentsRowsHTML();
+        }
+
+        // Customer Face Portrait upload modifier (WITH CANVAS RESIZER COMPRESSION)
+        async function uploadCustomerPhoto(e) {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    customerPhotoFormDraft = await resizeImage(file, 200, 200); // 200px square is perfect for customer avatar
+                    document.getElementById('portrait-preview-box').innerHTML = `
+                        <div class="relative">
+                            <img src="${customerPhotoFormDraft}" class="w-16 h-16 rounded-full object-cover border border-stone-300" />
+                            <button type="button" onclick="clearCustomerPortraitPhotoDraft()" class="absolute -top-1 -right-1 bg-stone-900 text-white rounded-full p-1"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                        </div>
+                    `;
+                    triggerToast('Client avatar saved successfully!', 'success');
+                } catch(err) {
+                    triggerToast('Client avatar resize failed.', 'error');
+                }
+            }
+        }
+
+        function clearCustomerPortraitPhotoDraft() {
+            customerPhotoFormDraft = null;
+            document.getElementById('portrait-preview-box').innerHTML = `
+                <label class="w-16 h-16 rounded-full bg-stone-100 border-2 border-dashed border-stone-300 hover:border-stone-500 flex flex-col items-center justify-center text-stone-400 cursor-pointer transition-all">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" /></svg>
+                    <span class="text-[7px] font-black uppercase mt-1">Face Pic</span>
+                    <input type="file" accept="image/*" capture="user" onchange="uploadCustomerPhoto(event)" class="hidden" />
+                </label>
+            `;
+        }
+
+        // Intake Form actions
+        function openNewBookingModal() {
+            resetBookingFormDraft();
+            document.getElementById('modal-new-booking').classList.remove('hidden');
+            generateFormGarmentsRowsHTML();
+        }
+
+        function closeNewBookingModal() {
+            document.getElementById('modal-new-booking').classList.add('hidden');
+        }
+
+        function resetBookingFormDraft() {
+            document.getElementById('form-cust-name').value = '';
+            document.getElementById('form-cust-phone').value = '';
+            document.getElementById('form-func-date').value = '';
+            document.getElementById('form-total-bill').value = '';
+            document.getElementById('form-advance-paid').value = '';
+            document.getElementById('form-booking-notes').value = '';
+            customerPhotoFormDraft = null;
+            clearCustomerPortraitPhotoDraft();
+
+            activeFormGarments = [
+                {
+                    id: Date.now(),
+                    garmentType: 'Kurta',
+                    amount: 0,
+                    fabricPhoto: null,
+                    tailorName: '',
+                    trialDate: '',
+                    deliveryDate: '',
+                    status: 'At Shop Counter',
+                    notes: ''
+                }
+            ];
+        }
+
+        function appendQuickNoteText(note) {
+            const notesTextarea = document.getElementById('form-booking-notes');
+            const prev = notesTextarea.value;
+            notesTextarea.value = prev ? `${prev}. ${note}` : note;
+        }
+
+        // Write New Customer Booking
+        async function saveBookingForm(e) {
+            e.preventDefault();
+
+            const customerName = document.getElementById('form-cust-name').value;
+            const customerPhone = document.getElementById('form-cust-phone').value;
+            const functionDate = document.getElementById('form-func-date').value;
+            const totalBill = Number(document.getElementById('form-total-bill').value) || 0;
+            const advancePaid = Number(document.getElementById('form-advance-paid').value) || 0;
+            const notes = document.getElementById('form-booking-notes').value;
+
+            if (!customerName || !customerName.trim()) {
+                triggerToast('Please enter the customer name.', 'error');
+                return;
+            }
+            if (!customerPhone || !customerPhone.trim()) {
+                triggerToast('Please enter the customer phone number.', 'error');
+                return;
+            }
+            const hasAmount = activeFormGarments.every(g => g.amount && g.amount > 0);
+            if (!hasAmount) {
+                triggerToast('Please enter a price amount greater than 0 for all garments.', 'error');
+                return;
+            }
+            const hasDeliveryDate = activeFormGarments.every(g => g.deliveryDate && g.deliveryDate !== '');
+            if (!hasDeliveryDate) {
+                triggerToast('Please select a final delivery date for all garments.', 'error');
+                return;
+            }
+
+            const newBooking = {
+                customerName,
+                customerPhone,
+                customerPhoto: customerPhotoFormDraft,
+                functionDate,
+                totalBill,
+                advancePaid,
+                notes,
+                garments: activeFormGarments,
+                bookingDate: new Date().toLocaleDateString('en-IN')
+            };
+
+            try {
+                const id = await dbAdd(STORE_BOOKINGS, newBooking);
+                if (!cloudMode) {
+                    newBooking.id = id;
+                    localBookings.unshift(newBooking);
+                    renderDashboard();
+                    renderLedger();
+                }
+                closeNewBookingModal();
+                triggerToast(`Booking #${id} saved successfully!`, 'success');
+            } catch (err) {
+                triggerToast('Could not save client portfolio.', 'error');
+            }
+        }
+
+        // --- PARTNERS MODAL CONTROLLERS ---
+        function openNewTailorModal() {
+            document.getElementById('modal-new-tailor').classList.remove('hidden');
+        }
+
+        function closeNewTailorModal() {
+            document.getElementById('modal-new-tailor').classList.add('hidden');
+        }
+
+        async function saveTailorForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('tailor-form-name').value;
+            const phone = document.getElementById('tailor-form-phone').value;
+            const specialty = document.getElementById('tailor-form-specialty').value;
+
+            if (!name || !name.trim()) {
+                triggerToast('Please enter the partner name.', 'error');
+                return;
+            }
+            if (!phone || !phone.trim()) {
+                triggerToast('Please enter the partner phone number.', 'error');
+                return;
+            }
+
+            const newTailor = { name, phone, specialty };
+            try {
+                const id = await dbAdd(STORE_TAILORS, newTailor);
+                if (!cloudMode) {
+                    newTailor.id = id;
+                    localTailors.push(newTailor);
+                    renderTailors();
+                }
+                closeNewTailorModal();
+                triggerToast(`${name} added to partners.`, 'success');
+            } catch (err) {
+                triggerToast('Could not save partner directory.', 'error');
+            }
+        }
+
+
+        // --- DETAILS DRAWER MODAL ---
+        let openDrawerBookingDraft = null;
+
+        function openLedgerDrawer(bookingId) {
+            const booking = localBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            openDrawerBookingDraft = booking;
+
+            const displayPhone = formatPhoneForDisplay(booking.customerPhone);
+
+            document.getElementById('drawer-header-title').textContent = `Sizing Record • Folder #${booking.id}`;
+            document.getElementById('drawer-cust-name').textContent = booking.customerName;
+            document.getElementById('drawer-cust-phone').textContent = displayPhone;
+            document.getElementById('drawer-func-date').textContent = booking.functionDate || 'Not Listed';
+            document.getElementById('drawer-booking-notes').textContent = booking.notes || 'No custom remarks notes.';
+                        document.getElementById('drawer-total-bill').textContent = `₹${booking.totalBill.toLocaleString('en-IN')}`;
+                        document.getElementById('drawer-advance-paid').textContent = `₹${booking.advancePaid.toLocaleString('en-IN')}`;
+                        
+                        const balance = booking.totalBill - booking.advancePaid;
+                        document.getElementById('drawer-pending-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
+
+            const avatarBox = document.getElementById('drawer-portrait-avatar');
+            avatarBox.innerHTML = booking.customerPhoto 
+                ? `<img src="${booking.customerPhoto}" class="w-16 h-16 rounded-full object-cover border border-stone-200" />`
+                : `<div class="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center font-bold text-stone-600 border border-stone-300 font-mono">${booking.customerName.charAt(0)}</div>`;
+
+            const garmentContainer = document.getElementById('drawer-garments-list-grid');
+            garmentContainer.innerHTML = '';
+
+            booking.garments.forEach((g, idx) => {
+                const fabricImg = g.fabricPhoto 
+                    ? `<img src="${g.fabricPhoto}" class="w-20 h-20 rounded-xl object-cover border border-stone-200" />`
+                    : `<div class="w-20 h-20 rounded-xl bg-stone-50 border border-dashed border-stone-300 flex flex-col items-center justify-center text-stone-400"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" /></svg></div>`;
+
+                const statusClass = getStatusClass(g.status);
+
+                const block = document.createElement('div');
+                block.className = "p-4 rounded-2xl border border-stone-200 bg-white space-y-4 shadow-sm animate-fade-in text-left font-sans";
+                block.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+                        <span class="text-xs font-bold bg-stone-50 border px-2.5 py-0.5 rounded-lg text-stone-800">Item #${idx+1}: ${g.garmentType}</span>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${statusClass}">${g.status}</span>
+                    </div>
+                    <div class="flex gap-4">
+                        ${fabricImg}
+                        <div class="flex-1 space-y-1">
+                            <span class="text-[9px] text-stone-400 font-bold uppercase block tracking-wider">Garment Price</span>
+                            <p class="text-sm font-extrabold text-stone-900 bg-stone-50 p-2.5 rounded-lg leading-normal border border-stone-200">₹${(g.amount || 0).toLocaleString('en-IN')}</p>
+                        </div>
+                    </div>
+                    <div class="bg-stone-50 p-3 rounded-xl border border-stone-200 grid grid-cols-3 gap-2 text-center text-[10px] font-bold font-mono">
+                        <div><span class="text-[8px] text-stone-400 uppercase">1st: Trial</span><span class="text-stone-900 block mt-0.5">${g.trialDate || 'N/A'}</span></div>
+                        <div><span class="text-[8px] text-stone-400 uppercase">2nd: Delivery</span><span class="text-stone-900 block mt-0.5">${g.deliveryDate}</span></div>
+                        <div><span class="text-[8px] text-stone-400 uppercase font-bold">Tailor</span><span class="text-stone-900 block mt-0.5">${g.tailorName || 'Counter'}</span></div>
+                    </div>
+                    <div class="space-y-1.5 font-sans">
+                        <span class="text-[9px] text-stone-400 font-bold uppercase block tracking-wider">Change Milestones Stage</span>
+                        <div class="segmented-control">
+                            <button onclick="updateGarmentStatusInDrawer(${booking.id}, ${g.id}, 'At Shop Counter')" class="segmented-btn ${g.status === 'At Shop Counter' ? 'active-intake' : 'inactive'}">Counter</button>
+                            <button onclick="updateGarmentStatusInDrawer(${booking.id}, ${g.id}, 'With Tailor')" class="segmented-btn ${g.status === 'With Tailor' ? 'active-workshop' : 'inactive'}">Workshop</button>
+                            <button onclick="updateGarmentStatusInDrawer(${booking.id}, ${g.id}, 'Ready for Pickup')" class="segmented-btn ${g.status === 'Ready for Pickup' ? 'active-ready' : 'inactive'}">Ready</button>
+                            <button onclick="updateGarmentStatusInDrawer(${booking.id}, ${g.id}, 'Completed & Delivered')" class="segmented-btn ${g.status === 'Completed & Delivered' ? 'active-delivered' : 'inactive'}">Deliver</button>
+                        </div>
+                    </div>
+                    <button onclick="directTailorWhatsApp(${booking.id}, ${g.id})" class="w-full btn-dark text-[10px] py-2.5 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-all font-sans">Send Details to Masterji</button>
+                `;
+                garmentContainer.appendChild(block);
+            });
+
+            const footer = document.getElementById('drawer-footer-actions');
+            footer.innerHTML = `
+                <div class="flex items-center gap-3 font-sans">
+                    <button onclick="requestDeleteBooking(${booking.id})" class="text-rose-650 hover:text-rose-800 text-xs font-bold uppercase tracking-wider font-mono">
+                        <span>Delete Folder</span>
+                    </button>
+                    <button onclick="openInvoiceModal(${booking.id})" class="text-stone-900 font-bold text-xs bg-stone-100 border border-stone-200 hover:bg-stone-200 px-3 py-2 rounded-xl flex items-center gap-1">
+                        <span>🧾 Generate Invoice Bill</span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2 font-sans">
+                    <button onclick="triggerCalendarSync(${booking.id})" class="bg-stone-100 text-stone-900 border border-stone-200 font-bold text-xs py-2 px-3.5 rounded-xl hover:bg-stone-200 inline-flex items-center gap-1">iPad Calendar</button>
+                    <button onclick="triggerWhatsAppConfirmation(${booking.id}, 'booking')" class="btn-dark text-xs py-2 px-3.5 rounded-xl font-bold">WhatsApp Booking</button>
+                    <button onclick="triggerWhatsAppConfirmation(${booking.id}, 'ready')" class="btn-gold text-xs py-2 px-3.5 rounded-xl font-bold">WhatsApp Ready</button>
+                </div>
+            `;
+
+            document.getElementById('modal-ledger-drawer').classList.remove('hidden');
+        }
+
+        async function updateGarmentStatusInDrawer(bookingId, garmentId, newStatus) {
+                    const booking = localBookings.find(b => b.id === bookingId);
+                    if (!booking) return;
+        
+                    booking.garments = booking.garments.map(g => g.id === garmentId ? { ...g, status: newStatus } : g);
+                    await dbUpdate(STORE_BOOKINGS, booking);
+                    
+                    openLedgerDrawer(bookingId);
+                    renderDashboard();
+                    renderLedger();
+                    triggerToast('Garment status updated successfully!', 'success');
+                }
+        
+                async function recordDrawerPayment() {
+                            if (!openDrawerBookingDraft) return;
+                            const inputEl = document.getElementById('drawer-payment-input');
+                            const paymentAmount = Number(inputEl.value) || 0;
+                            if (paymentAmount <= 0) {
+                                triggerToast('Please enter a valid payment amount.', 'error');
+                                return;
+                            }
+                            
+                            openDrawerBookingDraft.advancePaid += paymentAmount;
+                            if (openDrawerBookingDraft.advancePaid > openDrawerBookingDraft.totalBill) {
+                                openDrawerBookingDraft.advancePaid = openDrawerBookingDraft.totalBill;
+                            }
+                
+                            try {
+                                await dbUpdate(STORE_BOOKINGS, openDrawerBookingDraft);
+                                inputEl.value = '';
+                                openLedgerDrawer(openDrawerBookingDraft.id);
+                                renderDashboard();
+                                renderLedger();
+                                triggerToast('Payment recorded successfully!', 'success');
+                            } catch (err) {
+                                triggerToast('Could not record payment.', 'error');
+                            }
+                        }
+                
+                        async function clearAllDrawerDues() {
+                            if (!openDrawerBookingDraft) return;
+                            const balance = openDrawerBookingDraft.totalBill - openDrawerBookingDraft.advancePaid;
+                            if (balance <= 0) {
+                                triggerToast('This account is already fully cleared.', 'info');
+                                return;
+                            }
+                            
+                            showCustomDialog({
+                                title: "Clear Outstanding Dues?",
+                                message: `Are you sure you want to mark this client folder as fully paid? This will record a final payment of ₹${balance.toLocaleString('en-IN')}.`,
+                                type: 'warning',
+                                confirmText: "Yes, Clear Account",
+                                onConfirm: async () => {
+                                    openDrawerBookingDraft.advancePaid = openDrawerBookingDraft.totalBill;
+                                    try {
+                                        await dbUpdate(STORE_BOOKINGS, openDrawerBookingDraft);
+                                        openLedgerDrawer(openDrawerBookingDraft.id);
+                                        renderDashboard();
+                                        renderLedger();
+                                        triggerToast('Outstanding balance cleared to zero!', 'success');
+                                    } catch (err) {
+                                        triggerToast('Could not clear dues.', 'error');
+                                    }
+                                }
+                            });
+                        }
+
+        function closeLedgerDrawer() {
+            document.getElementById('modal-ledger-drawer').classList.add('hidden');
+        }
+
+
+        // --- INVOICE & RECEIPT GENERATOR ENGINES ---
+        let currentInvoiceIdDraft = null;
+
+        function openInvoiceModal(bookingId) {
+            const booking = localBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            currentInvoiceIdDraft = bookingId;
+
+            const displayPhone = formatPhoneForDisplay(booking.customerPhone);
+
+            document.getElementById('bill-invoice-id').textContent = `#BDS-${booking.id}`;
+            document.getElementById('bill-invoice-date').textContent = booking.bookingDate || new Date().toLocaleDateString('en-IN');
+            document.getElementById('bill-cust-name').textContent = booking.customerName;
+            document.getElementById('bill-cust-phone').textContent = displayPhone;
+            document.getElementById('bill-func-date').textContent = booking.functionDate || 'N/A';
+
+            const tbody = document.getElementById('bill-items-tbody');
+            tbody.innerHTML = '';
+            
+            booking.garments.forEach((g, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-stone-100 font-medium text-stone-800";
+                tr.innerHTML = `
+                    <td class="py-3 font-bold text-stone-900">${g.garmentType}</td>
+                    <td class="py-3 text-right font-mono font-bold">₹${(g.amount || 0).toLocaleString('en-IN')}</td>
+                    <td class="py-3 text-center font-mono">${g.trialDate || 'N/A'}</td>
+                    <td class="py-3 text-right font-mono">${g.deliveryDate}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const balance = booking.totalBill - booking.advancePaid;
+            document.getElementById('bill-total-bill').textContent = `₹${booking.totalBill.toLocaleString('en-IN')}`;
+            document.getElementById('bill-advance-paid').textContent = `₹${booking.advancePaid.toLocaleString('en-IN')}`;
+            document.getElementById('bill-pending-balance').textContent = `₹${balance.toLocaleString('en-IN')}`;
+
+            const remarksContainer = document.getElementById('bill-remarks-container');
+            if (booking.notes && booking.notes.trim() !== "") {
+                remarksContainer.classList.remove('hidden');
+                document.getElementById('bill-remarks-text').textContent = booking.notes;
+            } else {
+                remarksContainer.classList.add('hidden');
+            }
+
+            document.getElementById('modal-invoice-preview').classList.remove('hidden');
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('modal-invoice-preview').classList.add('hidden');
+            currentInvoiceIdDraft = null;
+        }
+
+        function printInvoice() {
+            window.print();
+        }
+
+        // --- EXTERNAL INTEGRATIONS REDIRECTS (GLITCH RESOLVED: TARGET _BLANK PREVENTS STATE LOSS) ---
+        function triggerPhoneCall(number) {
+            if (!number) return;
+            const cleaned = number.replace(/[^\d+]/g, ''); // Keep digits and plus
+            window.location.href = `tel:${cleaned}`;
+        }
+
+        function triggerWhatsAppConfirmation(bookingId, type = 'booking') {
+            const booking = localBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            if (!booking.customerPhone) {
+                triggerToast('Customer phone line is missing.', 'error');
+                return;
+            }
+
+            let text = '';
+            const balance = booking.totalBill - booking.advancePaid;
+
+            if (type === 'booking') {
+                const summary = booking.garments.map((g, i) => ` • Item ${i+1}: ${g.garmentType} (Trial: ${g.trialDate || 'TBD'})`).join('\n');
+                text = `*BANSAL DESIGNER STUDIO (BDS)*\n` +
+                       `---------------------------------------\n` +
+                       `Dear ${booking.customerName},\n` +
+                       `Your design request under Portfolio Folder ID *#${booking.id}* is successfully registered.\n\n` +
+                       `*Garments List:*\n${summary}\n\n` +
+                       `*Total Invoice Bill:* ₹${booking.totalBill}\n` +
+                       `*Advance Deposited:* ₹${booking.advancePaid}\n` +
+                       `*Balance Handover Due:* ₹${balance}\n\n` +
+                       `We will notify you at your 1st Fitting Trial. Dhanyawad!`;
+            } else {
+                text = `*BANSAL DESIGNER STUDIO (BDS)*\n` +
+                       `---------------------------------------\n` +
+                       `Namaste ${booking.customerName},\n` +
+                       `Your bespoke garments in Portfolio Folder ID *#${booking.id}* are completed and *READY FOR PICKUP*!\n\n` +
+                       `*Outstanding Balance:* ₹${balance}\n\n` +
+                       `Please drop by the studio counter to collect your designs. Dhanyawad!`;
+            }
+
+            triggerWhatsAppOpen(booking.customerPhone, text);
+        }
+
+        function directTailorWhatsApp(bookingId, garmentId) {
+                    const booking = localBookings.find(b => b.id === bookingId);
+                    if (!booking) return;
+        
+                    const garment = booking.garments.find(g => g.id === garmentId);
+                    if (!garment) return;
+        
+                    const tailorDetails = localTailors.find(t => t.name === garment.tailorName);
+                    const destinationPhone = tailorDetails ? tailorDetails.phone : '';
+        
+                    if (!destinationPhone) {
+                        triggerToast('No partner phone number found. Please assign a registered partner first.', 'error');
+                        return;
+                    }
+        
+                    const garmentIdx = booking.garments.findIndex(g => g.id === garmentId) + 1;
+                    const tailorTrialDate = getTwoDaysPrior(garment.trialDate || garment.deliveryDate);
+                    const text = `*NEW WORK SHEET: BANSAL DESIGNER STUDIO (BDS)*\n` +
+                                 `---------------------------------------\n` +
+                                 `*Client Folder:* #${booking.id}-${garmentIdx}\n` +
+                                 `*Garment Type:* ${garment.garmentType}\n` +
+                                 `*Trial Date for Masterji:* ${tailorTrialDate}\n\n` +
+                                 `*Styling Notes:* ${garment.notes || 'None'}\n` +
+                                 `---------------------------------------\n` +
+                                 `Confirm sheet reception. Thank you!`;
+        
+                    triggerWhatsAppOpen(destinationPhone, text);
+                }
+
+        function pingTailorWorkshopWhatsApp(tailorId) {
+                    const tailor = localTailors.find(t => t.id === tailorId);
+                    if (!tailor) return;
+        
+                    const assignedItems = [];
+                    localBookings.forEach(b => {
+                        b.garments.forEach(g => {
+                            if (g.tailorName === tailor.name && g.status === 'With Tailor') {
+                                assignedItems.push({ g, b });
+                            }
+                        });
+                    });
+        
+                    const listText = assignedItems.map((item, idx) => {
+                        const tailorTrialDate = getTwoDaysPrior(item.g.trialDate || item.g.deliveryDate);
+                        return `${idx+1}. #${item.b.id} - ${item.g.garmentType} (Required: ${tailorTrialDate})`;
+                    }).join('\n');
+                    
+                    const text = `*WORK WORKSHOP STATUS PING (BDS)*\n` +
+                                 `-------------------------------------\n` +
+                                 `Hello ${tailor.name}, here is your active pending list with our studio counter:\n\n` +
+                                 `${listText || 'No pending workshop items assigned.'}\n\n` +
+                                 `Kindly let us know if any garments are completed and ready for pickup. Thanks!`;
+        
+                    triggerWhatsAppOpen(tailor.phone, text);
+                }
+
+        // iPad Safe Calendar Engine (GLITCH RESOLVED: SAFETY CHECKS FOR EMPTY GARMENT ARRAYS)
+        function triggerCalendarSync(bookingId) {
+            const booking = localBookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            if (!booking.garments || booking.garments.length === 0) {
+                triggerToast('No garments found in this booking portfolio.', 'error');
+                return;
+            }
+
+            const garment = booking.garments[0];
+            document.getElementById('cal-trial-text').textContent = garment.trialDate ? `${garment.trialDate} (Trial: ${booking.customerName})` : 'Not Set';
+            document.getElementById('cal-delv-text').textContent = `${garment.deliveryDate} (Delivery: ${booking.customerName})`;
+            document.getElementById('cal-func-text').textContent = booking.functionDate ? `${booking.functionDate} (Event: ${booking.customerName})` : 'Not Set';
+
+            document.getElementById('modal-calendar-sync').classList.remove('hidden');
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('modal-calendar-sync').classList.add('hidden');
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                triggerToast('Date details copied to clipboard!', 'success');
+            } catch (err) {
+                console.warn('Sandbox blocked copy.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // --- MODAL CONFIRM DELETION ENGINE (SANDBOX FRIENDLY) ---
+        function requestDeleteBooking(bookingId) {
+            showCustomDialog({
+                title: "Permanently Delete Folder?",
+                message: `Are you sure you want to delete customer folder #${bookingId}? All measurements, images, and milestones will be wiped.`,
+                type: 'danger',
+                confirmText: "Delete File",
+                onConfirm: async () => {
+                    try {
+                        await dbDelete(STORE_BOOKINGS, bookingId);
+                        localBookings = localBookings.filter(b => b.id !== bookingId);
+                        closeLedgerDrawer();
+                        renderDashboard();
+                        renderLedger();
+                        triggerToast('Client card deleted successfully.', 'success');
+                    } catch (err) {
+                        triggerToast('Deletion error.', 'error');
+                    }
+                }
+            });
+        }
+
+        function requestDeleteTailor(tailorId) {
+            showCustomDialog({
+                title: "Delete Partner Profile?",
+                message: "This will remove the tailor from your directory lists. Assigned clothes remain safe.",
+                type: 'danger',
+                confirmText: "Delete Profile",
+                onConfirm: async () => {
+                    try {
+                        await dbDelete(STORE_TAILORS, tailorId);
+                        localTailors = localTailors.filter(t => t.id !== tailorId);
+                        renderTailors();
+                        triggerToast('Tailor deleted successfully.', 'success');
+                    } catch (err) {
+                        triggerToast('Deletion error.', 'error');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
