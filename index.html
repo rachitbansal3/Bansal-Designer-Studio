@@ -361,7 +361,7 @@
                 </div>
 
                 <!-- Numerical Status Widgets -->
-                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4 md:gap-6">
+                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6">
                     <div onclick="switchTab('bookings', 'At Shop Counter')" class="premium-card p-5 sm:p-6 cursor-pointer group relative overflow-hidden bg-white">
                         <div class="absolute top-0 left-0 w-1.5 h-full bg-stone-950"></div>
                         <div class="flex items-center justify-between text-stone-400">
@@ -401,9 +401,9 @@
                         </div>
                         <div class="flex items-center justify-between mt-4 gap-2">
                             <p id="sum-revenue" class="text-2xl sm:text-3xl font-bold text-amber-400 font-mono whitespace-nowrap">•••••</p>
-                            <button onclick="togglePendingVisibility(event)" class="text-stone-400 hover:text-amber-400 p-1.5 bg-stone-900/50 hover:bg-stone-900 border border-stone-800 rounded-xl transition-all no-print">
-                                <svg id="eye-icon-pending" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                            <button onclick="toggleFinancialsVisibilityWithPassword(event)" class="text-stone-400 hover:text-amber-400 p-1.5 bg-stone-900/50 hover:bg-stone-900 border border-stone-800 rounded-xl transition-all no-print" title="Toggle Private Stats with Password">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path id="eye-icon-all" stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                                 </svg>
                             </button>
                         </div>
@@ -419,13 +419,21 @@
                         </div>
                         <div class="flex items-center justify-between mt-4 gap-2">
                             <p id="sum-total-collected" class="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono whitespace-nowrap">•••••</p>
-                            <button onclick="toggleTotalCollectedVisibility(event)" class="text-stone-400 hover:text-emerald-400 p-1.5 bg-stone-900/50 hover:bg-stone-900 border border-stone-800 rounded-xl transition-all no-print">
-                                <svg id="eye-icon-total" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                </svg>
-                            </button>
                         </div>
                         <span class="text-[10px] text-stone-400 mt-2.5 block">Total collections received</span>
+                    </div>
+
+                    <div class="premium-card p-5 sm:p-6 relative overflow-hidden bg-stone-950 text-white group">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>
+                        <div class="absolute -right-8 -bottom-8 w-24 h-24 rounded-full bg-blue-500/5 blur-xl"></div>
+                        <div class="flex items-center justify-between text-stone-400">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-stone-300">Total Booked Sales</span>
+                            <span class="text-blue-400 font-bold text-[10px] font-mono uppercase border border-blue-500/30 px-2 py-0.5 rounded">Ledger Combined</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 gap-2">
+                            <p id="sum-total-booked" class="text-2xl sm:text-3xl font-bold text-blue-400 font-mono whitespace-nowrap">•••••</p>
+                        </div>
+                        <span class="text-[10px] text-stone-400 mt-2.5 block">Total value of all bookings combined</span>
                     </div>
                 </section>
 
@@ -1028,8 +1036,7 @@
                 let localBookings = [];
                 let localTailors = [];
                 let editingBookingId = null;
-                let isPendingCashVisible = false;
-                let isTotalCollectedVisible = false;
+                let isFinancialsVisible = false;
         
                 // ==========================================================================
                 // FIREBASE CLOUD DATABASE CONFIGURATION (Option A)
@@ -1220,9 +1227,13 @@
                             document.body.removeChild(a);
                         }
 
-        async function copyBase64ImageToClipboard(base64Data) {
-            try {
-                return new Promise((resolve, reject) => {
+        window.clipboardBlobCache = new Map();
+
+        function precacheBookingPhotos(bookingId) {
+            const booking = localBookings.find(b => b.id === bookingId);
+            if (!booking || !booking.garments) return;
+            booking.garments.forEach(g => {
+                if (g.fabricPhoto && !window.clipboardBlobCache.has(g.fabricPhoto)) {
                     const img = new Image();
                     img.crossOrigin = 'anonymous';
                     img.onload = function() {
@@ -1232,15 +1243,58 @@
                             canvas.height = img.height;
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0);
-                            canvas.toBlob(async function(blob) {
-                                try {
-                                    await navigator.clipboard.write([
-                                        new ClipboardItem({ 'image/png': blob })
-                                    ]);
-                                    resolve();
-                                } catch (e) {
-                                    console.warn('Clipboard write failed:', e);
-                                    reject(e);
+                            canvas.toBlob(function(blob) {
+                                if (blob) {
+                                    window.clipboardBlobCache.set(g.fabricPhoto, blob);
+                                    console.log('Precached photo for garment', g.id);
+                                }
+                            }, 'image/png');
+                        } catch (e) {
+                            console.warn('Precache blob failed:', e);
+                        }
+                    };
+                    img.onerror = function() {
+                        console.warn('Precache image load failed');
+                    };
+                    img.src = g.fabricPhoto;
+                }
+            });
+        }
+
+        function copyBase64ImageToClipboard(base64Data) {
+            try {
+                // If the blob is already cached, write it completely synchronously!
+                if (window.clipboardBlobCache && window.clipboardBlobCache.has(base64Data)) {
+                    const cachedBlob = window.clipboardBlobCache.get(base64Data);
+                    navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': cachedBlob })
+                    ]).then(() => {
+                        console.log('Synchronous clipboard write from cache successful.');
+                    }).catch(err => {
+                        console.error('Cached clipboard write failed:', err);
+                    });
+                    return;
+                }
+
+                // Otherwise, write via Promise (Safari-compatible asynchronous write)
+                const imagePromise = new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0);
+                            canvas.toBlob(function(blob) {
+                                if (blob) {
+                                    if (window.clipboardBlobCache) {
+                                        window.clipboardBlobCache.set(base64Data, blob);
+                                    }
+                                    resolve(blob);
+                                } else {
+                                    reject(new Error('Canvas blob conversion failed'));
                                 }
                             }, 'image/png');
                         } catch (e) {
@@ -1252,8 +1306,46 @@
                     };
                     img.src = base64Data;
                 });
+
+                navigator.clipboard.write([
+                    new ClipboardItem({
+                        'image/png': imagePromise
+                    })
+                ]).catch(err => {
+                    console.error('Promise-based Clipboard write failed, trying fallback:', err);
+                    // Fallback for older browsers: write directly after promise resolves
+                    imagePromise.then(blob => {
+                        navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': blob })
+                        ]).catch(err2 => {
+                            console.error('Fallback clipboard write failed:', err2);
+                        });
+                    });
+                });
             } catch (err) {
-                console.warn('Clipboard image copy blocked or failed:', err);
+                console.warn('Clipboard write initialization failed:', err);
+                // Direct fallback path
+                try {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        canvas.toBlob(function(blob) {
+                            if (blob && navigator.clipboard) {
+                                navigator.clipboard.write([
+                                    new ClipboardItem({ 'image/png': blob })
+                                ]).catch(err => console.warn('Direct fallback write failed:', err));
+                            }
+                        }, 'image/png');
+                    };
+                    img.src = base64Data;
+                } catch (e) {
+                    console.error('All clipboard options failed:', e);
+                }
             }
         }
                 
@@ -1848,32 +1940,35 @@
 
             let pendingCash = 0;
             let totalCollected = 0;
+            let totalBooked = 0;
             localBookings.forEach(b => {
                 const balance = b.totalBill - b.advancePaid;
                 if (balance > 0) {
                     pendingCash += balance;
                 }
                 totalCollected += b.advancePaid;
+                totalBooked += b.totalBill;
             });
 
             const sumRevEl = document.getElementById('sum-revenue');
-            const eyePendingEl = document.getElementById('eye-icon-pending');
-            if (isPendingCashVisible) {
-                sumRevEl.textContent = '₹' + pendingCash.toLocaleString('en-IN');
-                eyePendingEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-            } else {
-                sumRevEl.textContent = '•••••';
-                eyePendingEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
-            }
-
             const sumTotalEl = document.getElementById('sum-total-collected');
-            const eyeTotalEl = document.getElementById('eye-icon-total');
-            if (isTotalCollectedVisible) {
-                sumTotalEl.textContent = '₹' + totalCollected.toLocaleString('en-IN');
-                eyeTotalEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+            const sumBookedEl = document.getElementById('sum-total-booked');
+            const eyeAllEl = document.getElementById('eye-icon-all');
+
+            if (isFinancialsVisible) {
+                if (sumRevEl) sumRevEl.textContent = '₹' + pendingCash.toLocaleString('en-IN');
+                if (sumTotalEl) sumTotalEl.textContent = '₹' + totalCollected.toLocaleString('en-IN');
+                if (sumBookedEl) sumBookedEl.textContent = '₹' + totalBooked.toLocaleString('en-IN');
+                if (eyeAllEl) {
+                    eyeAllEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+                }
             } else {
-                sumTotalEl.textContent = '•••••';
-                eyeTotalEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
+                if (sumRevEl) sumRevEl.textContent = '•••••';
+                if (sumTotalEl) sumTotalEl.textContent = '•••••';
+                if (sumBookedEl) sumBookedEl.textContent = '•••••';
+                if (eyeAllEl) {
+                    eyeAllEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
+                }
             }
 
             document.getElementById('badge-total-bookings').textContent = localBookings.length;
@@ -1960,7 +2055,7 @@
 
                     <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
                         <span class="text-[9px] font-black border px-3 py-1.5 rounded-md ${labelStyle}">${labelText}</span>
-                        <button onclick="directTailorWhatsApp(${item.booking.id}, ${item.garment.id})" class="btn-dark text-[10px] py-2 px-3 rounded-lg flex items-center gap-1 shadow">
+                        <button onclick="directTailorWhatsApp(${item.booking.id}, ${item.garment.id})" onmouseenter="precacheBookingPhotos(${item.booking.id})" ontouchstart="precacheBookingPhotos(${item.booking.id})" class="btn-dark text-[10px] py-2 px-3 rounded-lg flex items-center gap-1 shadow">
                             <span>Ping Tailor</span>
                         </button>
                     </div>
@@ -2124,7 +2219,7 @@
                         <div class="flex items-center gap-1.5">
                             <button onclick="triggerPhoneCall('${b.customerPhone}')" class="p-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-100 transition-all shadow-sm"><svg class="w-3.5 h-3.5 text-stone-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg></button>
                             <button onclick="triggerCalendarSync(${b.id})" class="p-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-100 transition-all shadow-sm"><svg class="w-3.5 h-3.5 text-stone-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></button>
-                            <button onclick="triggerWhatsAppConfirmation(${b.id})" class="text-[9px] font-bold bg-white border border-stone-200 px-3 py-2 rounded-xl hover:bg-stone-100 transition-all shadow-sm">WhatsApp</button>
+                            <button onclick="triggerWhatsAppConfirmation(${b.id})" onmouseenter="precacheBookingPhotos(${b.id})" ontouchstart="precacheBookingPhotos(${b.id})" class="text-[9px] font-bold bg-white border border-stone-200 px-3 py-2 rounded-xl hover:bg-stone-100 transition-all shadow-sm">WhatsApp</button>
                         </div>
                     </div>
                 `;
@@ -2585,6 +2680,8 @@
             const booking = localBookings.find(b => b.id === bookingId);
             if (!booking) return;
 
+            precacheBookingPhotos(bookingId);
+
             openDrawerBookingDraft = booking;
 
             const displayPhone = formatPhoneForDisplay(booking.customerPhone);
@@ -2691,6 +2788,8 @@
             btn.className = "bg-white hover:bg-stone-100 border border-stone-200 text-stone-900 font-bold py-2 px-3.5 rounded-xl text-[10px] flex items-center gap-1.5 shadow-sm transition-all font-sans";
             btn.innerHTML = `<span>🟢 Send All to ${tailorName}</span>`;
             btn.onclick = () => sendAllGarmentsToTailorWhatsApp(booking.id, tailorName);
+            btn.onmouseenter = () => precacheBookingPhotos(booking.id);
+            btn.ontouchstart = () => precacheBookingPhotos(booking.id);
             tailorContainer.appendChild(btn);
             });
             } else {
@@ -2784,15 +2883,23 @@
             document.getElementById('modal-ledger-drawer').classList.add('hidden');
         }
 
-        function togglePendingVisibility(e) {
+        function toggleFinancialsVisibilityWithPassword(e) {
             if (e) e.stopPropagation();
-            isPendingCashVisible = !isPendingCashVisible;
-            renderDashboard();
-        }
-
-        function toggleTotalCollectedVisibility(e) {
-            if (e) e.stopPropagation();
-            isTotalCollectedVisible = !isTotalCollectedVisible;
+            if (!isFinancialsVisible) {
+                const password = prompt("Enter password to reveal financial stats:");
+                if (password === "1234") {
+                    isFinancialsVisible = true;
+                    triggerToast("Financial stats revealed!", "success");
+                } else if (password !== null) {
+                    triggerToast("Incorrect password!", "error");
+                    return;
+                } else {
+                    return; // Cancelled
+                }
+            } else {
+                isFinancialsVisible = false;
+                triggerToast("Financial stats hidden.", "info");
+            }
             renderDashboard();
         }
 
