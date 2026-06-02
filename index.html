@@ -2955,17 +2955,9 @@
             const garmentWithPhoto = booking.garments.find(g => g.fabricPhoto);
             if (garmentWithPhoto && garmentWithPhoto.fabricPhoto) {
                 triggerToast('Garment photo copied to clipboard! Paste it in WhatsApp chat.', 'success');
-                try {
-                    await copyBase64ImageToClipboard(garmentWithPhoto.fabricPhoto);
-                } catch(e) {
-                    console.warn("Clipboard write failed", e);
-                }
-                setTimeout(() => {
-                    triggerWhatsAppOpen(booking.customerPhone, text);
-                }, 1200);
-            } else {
-                triggerWhatsAppOpen(booking.customerPhone, text);
+                copyBase64ImageToClipboard(garmentWithPhoto.fabricPhoto);
             }
+            triggerWhatsAppOpen(booking.customerPhone, text);
         }
 
         async function directTailorWhatsApp(bookingId, garmentId) {
@@ -2999,17 +2991,9 @@
 
             if (garment.fabricPhoto) {
                 triggerToast('Garment photo copied to clipboard! Paste it in WhatsApp chat.', 'success');
-                try {
-                    await copyBase64ImageToClipboard(garment.fabricPhoto);
-                } catch(e) {
-                    console.warn("Clipboard write failed", e);
-                }
-                setTimeout(() => {
-                    triggerWhatsAppOpen(destinationPhone, text);
-                }, 1200);
-            } else {
-                triggerWhatsAppOpen(destinationPhone, text);
+                copyBase64ImageToClipboard(garment.fabricPhoto);
             }
+            triggerWhatsAppOpen(destinationPhone, text);
         }
 
         async function sendAllGarmentsToTailorWhatsApp(bookingId, tailorName) {
@@ -3050,17 +3034,9 @@
             const firstGarmentWithPhoto = garments.find(g => g.fabricPhoto);
             if (firstGarmentWithPhoto && firstGarmentWithPhoto.fabricPhoto) {
                 triggerToast('Garment photo copied to clipboard! Paste it in WhatsApp chat.', 'success');
-                try {
-                    await copyBase64ImageToClipboard(firstGarmentWithPhoto.fabricPhoto);
-                } catch(e) {
-                    console.warn("Clipboard write failed", e);
-                }
-                setTimeout(() => {
-                    triggerWhatsAppOpen(destinationPhone, text);
-                }, 1200);
-            } else {
-                triggerWhatsAppOpen(destinationPhone, text);
+                copyBase64ImageToClipboard(firstGarmentWithPhoto.fabricPhoto);
             }
+            triggerWhatsAppOpen(destinationPhone, text);
         }
 
         function pingTailorWorkshopWhatsApp(tailorId) {
