@@ -340,7 +340,7 @@
         <main class="flex-1 p-6 max-w-[1550px] w-full mx-auto">
             
             <!-- Dynamic Toast Container -->
-            <div id="toast-box" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-950 text-white border border-stone-800 hidden transition-all">
+            <div id="toast-box" style="z-index: 9999;" class="fixed bottom-6 right-6 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-950 text-white border border-stone-800 hidden transition-all">
                 <span id="toast-message" class="font-bold text-xs tracking-wide"></span>
             </div>
 
@@ -1602,12 +1602,9 @@
                     } catch(e) {}
         
                     if (cloudMode && firestoreDb) {
-                        try {
-                            await firestoreDb.collection(storeName).doc(item.id.toString()).set(item);
-                            return item.id;
-                        } catch (err) {
-                            console.error("Firestore add failed, proceeding to fallback:", err);
-                        }
+                        firestoreDb.collection(storeName).doc(item.id.toString()).set(item).catch(err => {
+                            console.error("Firestore add background sync error:", err);
+                        });
                     }
         
                     if (storageMode === 'localstorage') {
@@ -1639,12 +1636,9 @@
                     } catch(e) {}
         
                     if (cloudMode && firestoreDb) {
-                        try {
-                            await firestoreDb.collection(storeName).doc(item.id.toString()).set(item);
-                            return;
-                        } catch (err) {
-                            console.error("Firestore update failed:", err);
-                        }
+                        firestoreDb.collection(storeName).doc(item.id.toString()).set(item).catch(err => {
+                            console.error("Firestore update background sync error:", err);
+                        });
                     }
         
                     if (storageMode === 'localstorage') {
@@ -1675,12 +1669,9 @@
                     } catch(e) {}
         
                     if (cloudMode && firestoreDb) {
-                        try {
-                            await firestoreDb.collection(storeName).doc(id.toString()).delete();
-                            return;
-                        } catch (err) {
-                            console.error("Firestore delete failed:", err);
-                        }
+                        firestoreDb.collection(storeName).doc(id.toString()).delete().catch(err => {
+                            console.error("Firestore delete background sync error:", err);
+                        });
                     }
         
                     if (storageMode === 'localstorage') {
