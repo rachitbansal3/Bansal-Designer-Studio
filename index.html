@@ -1163,11 +1163,11 @@
             
             // Adjust styles depending on type
             if (type === 'error') {
-                toastBox.className = "fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-rose-955 text-rose-200 border border-rose-800 transition-all animate-fade-in";
+                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-rose-955 text-rose-200 border border-rose-800 transition-all animate-fade-in";
             } else if (type === 'success') {
-                toastBox.className = "fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-emerald-950 text-emerald-200 border border-emerald-800 transition-all animate-fade-in";
+                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-emerald-950 text-emerald-200 border border-emerald-800 transition-all animate-fade-in";
             } else {
-                toastBox.className = "fixed bottom-6 right-6 z-50 flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-955 text-amber-200 border border-stone-800 transition-all animate-fade-in";
+                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-955 text-amber-200 border border-stone-800 transition-all animate-fade-in";
             }
             
             toastBox.classList.remove('hidden');
@@ -1524,52 +1524,35 @@
         }
 
         async function dbGetAll(storeName) {
-                    let localBackup = [];
-                    try {
-                        const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
-                        if (raw) localBackup = JSON.parse(raw);
-                    } catch(e) { console.warn("Fallback backup reads block."); }
-        
-                    if (cloudMode && firestoreDb) {
+            let localBackup = [];
+            try {
+                const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
+                if (raw) localBackup = JSON.parse(raw);
+            } catch(e) { console.warn("Fallback backup reads block."); }
+
+            if (storageMode === 'localstorage') {
+                return localBackup;
+            }
+
+            try {
+                const db = await openIndexedDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => {
                         try {
-                            const snapshot = await firestoreDb.collection(storeName).get();
-                            const items = [];
-                            snapshot.forEach(doc => {
-                                items.push({ ...doc.data(), id: Number(doc.id) });
-                            });
-                            try {
-                                localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(items));
-                            } catch(e) {}
-                            return items;
-                        } catch (err) {
-                            console.warn("Firestore load failed, using local backup:", err);
-                            return localBackup;
-                        }
-                    }
-        
-                    if (storageMode === 'localstorage') {
-                        return localBackup;
-                    }
-        
-                    try {
-                        const db = await openIndexedDB();
-                        return new Promise((resolve, reject) => {
-                            const tx = db.transaction(storeName, 'readonly');
-                            const store = tx.objectStore(storeName);
-                            const request = store.getAll();
-                            request.onsuccess = () => {
-                                try {
-                                    localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(request.result));
-                                } catch(err) {}
-                                resolve(request.result);
-                            };
-                            request.onerror = () => resolve(localBackup);
-                        });
-                    } catch(e) {
-                        storageMode = 'localstorage';
-                        return localBackup;
-                    }
-                }
+                            localStorage.setItem(`BDS_BackRedundancy_${storeName}`, JSON.stringify(request.result));
+                        } catch(err) {}
+                        resolve(request.result);
+                    };
+                    request.onerror = () => resolve(localBackup);
+                });
+            } catch(e) {
+                storageMode = 'localstorage';
+                return localBackup;
+            }
+        }
 
         async function dbAdd(storeName, item) {
                     if (storeName === STORE_BOOKINGS) {
@@ -1626,7 +1609,26 @@
                     }
                 }
 
+        function clearClipboardCacheForBooking(bookingId, garments) {
+            if (!window.clipboardBlobCache) return;
+            window.clipboardBlobCache.delete(`booking-${bookingId}`);
+            if (garments) {
+                garments.forEach(g => {
+                    window.clipboardBlobCache.delete(`garment-${g.id}`);
+                });
+            }
+            // Clear tailor composites
+            for (let key of window.clipboardBlobCache.keys()) {
+                if (key.startsWith(`booking-${bookingId}-tailor-`)) {
+                    window.clipboardBlobCache.delete(key);
+                }
+            }
+        }
+
         async function dbUpdate(storeName, item) {
+                    if (storeName === STORE_BOOKINGS) {
+                        clearClipboardCacheForBooking(item.id, item.garments);
+                    }
                     try {
                         let localBackup = [];
                         const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
@@ -1660,6 +1662,9 @@
                 }
 
         async function dbDelete(storeName, id) {
+                    if (storeName === STORE_BOOKINGS) {
+                        clearClipboardCacheForBooking(id);
+                    }
                     try {
                         let localBackup = [];
                         const raw = localStorage.getItem(`BDS_BackRedundancy_${storeName}`);
@@ -1877,6 +1882,43 @@
 
         async function initializeBDSData() {
             try {
+                // 1. Load local cache immediately for instant startup (<5ms)
+                localBookings = await dbGetAll(STORE_BOOKINGS);
+                localTailors = await dbGetAll(STORE_TAILORS);
+
+                // Migration layer: guarantee every garment row has a valid unique ID and amount field
+                localBookings.forEach(b => {
+                    if (!b.garments) b.garments = [];
+                    b.garments.forEach((g, idx) => {
+                        if (!g.id) {
+                            g.id = Date.now() + idx + Math.floor(Math.random() * 1000);
+                        }
+                        if (g.amount === undefined) {
+                            g.amount = 0;
+                        }
+                    });
+                });
+
+                if (localTailors.length === 0) {
+                    const seeds = [
+                        { id: 1, name: 'Aslam Bhai', phone: '9876543210', specialty: 'Sherwanis & Suits' },
+                        { id: 2, name: 'Sohan Lal Master', phone: '9123456789', specialty: 'Kurtas & Shirts' },
+                        { id: 3, name: 'Verma Boutique Craft', phone: '8877665544', specialty: 'Blouses & Saree Alterations' }
+                    ];
+                    for (let t of seeds) {
+                        await dbAdd(STORE_TAILORS, t);
+                    }
+                    localTailors = seeds;
+                }
+
+                localBookings.sort((a,b) => b.id - a.id);
+
+                // Initial render from local cache
+                renderDashboard();
+                renderLedger();
+                renderTailors();
+
+                // 2. Setup real-time cloud listeners if connected to Firebase
                 if (cloudMode && firestoreDb) {
                     // Set up real-time listener for BOOKINGS
                     firestoreDb.collection(STORE_BOOKINGS).onSnapshot(snapshot => {
@@ -1918,18 +1960,6 @@
                         });
                         localTailors = items;
                         
-                        if (localTailors.length === 0) {
-                            const seeds = [
-                                { id: 1, name: 'Aslam Bhai', phone: '9876543210', specialty: 'Sherwanis & Suits' },
-                                { id: 2, name: 'Sohan Lal Master', phone: '9123456789', specialty: 'Kurtas & Shirts' },
-                                { id: 3, name: 'Verma Boutique Craft', phone: '8877665544', specialty: 'Blouses & Saree Alterations' }
-                            ];
-                            for (let t of seeds) {
-                                dbAdd(STORE_TAILORS, t);
-                            }
-                            localTailors = seeds;
-                        }
-                        
                         try {
                             localStorage.setItem(`BDS_BackRedundancy_${STORE_TAILORS}`, JSON.stringify(localTailors));
                         } catch(e) {}
@@ -1938,40 +1968,6 @@
                     }, err => {
                         console.error("Firestore tailors sync error:", err);
                     });
-                } else {
-                    localBookings = await dbGetAll(STORE_BOOKINGS);
-                    localTailors = await dbGetAll(STORE_TAILORS);
-
-                    // Migration layer: guarantee every garment row has a valid unique ID and amount field
-                    localBookings.forEach(b => {
-                        if (!b.garments) b.garments = [];
-                        b.garments.forEach((g, idx) => {
-                            if (!g.id) {
-                                g.id = Date.now() + idx + Math.floor(Math.random() * 1000);
-                            }
-                            if (g.amount === undefined) {
-                                g.amount = 0;
-                            }
-                        });
-                    });
-
-                    if (localTailors.length === 0) {
-                        const seeds = [
-                            { id: 1, name: 'Aslam Bhai', phone: '9876543210', specialty: 'Sherwanis & Suits' },
-                            { id: 2, name: 'Sohan Lal Master', phone: '9123456789', specialty: 'Kurtas & Shirts' },
-                            { id: 3, name: 'Verma Boutique Craft', phone: '8877665544', specialty: 'Blouses & Saree Alterations' }
-                        ];
-                        for (let t of seeds) {
-                            await dbAdd(STORE_TAILORS, t);
-                        }
-                        localTailors = seeds;
-                    }
-
-                    localBookings.sort((a,b) => b.id - a.id);
-
-                    renderDashboard();
-                    renderLedger();
-                    renderTailors();
                 }
             } catch (err) {
                 console.error("Database boot failure:", err);
@@ -2700,11 +2696,10 @@
                 }
                 try {
                     await dbUpdate(STORE_BOOKINGS, newBooking);
-                    if (!cloudMode) {
-                        localBookings = localBookings.map(b => b.id === editingBookingId ? newBooking : b);
-                        renderDashboard();
-                        renderLedger();
-                    }
+                    // Always update local memory and re-render immediately (instant feedback)
+                    localBookings = localBookings.map(b => b.id === editingBookingId ? newBooking : b);
+                    renderDashboard();
+                    renderLedger();
                     closeNewBookingModal();
                     triggerToast(`Booking #${editingBookingId} updated successfully!`, 'success');
                     editingBookingId = null;
@@ -2714,12 +2709,15 @@
             } else {
                 try {
                     const id = await dbAdd(STORE_BOOKINGS, newBooking);
-                    if (!cloudMode) {
-                        newBooking.id = id;
+                    // Always update local memory and re-render immediately (instant feedback)
+                    newBooking.id = id;
+                    if (!localBookings.some(b => b.id === id)) {
                         localBookings.unshift(newBooking);
-                        renderDashboard();
-                        renderLedger();
+                    } else {
+                        localBookings = localBookings.map(b => b.id === id ? newBooking : b);
                     }
+                    renderDashboard();
+                    renderLedger();
                     closeNewBookingModal();
                     triggerToast(`Booking #${id} saved successfully!`, 'success');
                 } catch (err) {
@@ -2755,11 +2753,13 @@
             const newTailor = { name, phone, specialty };
             try {
                 const id = await dbAdd(STORE_TAILORS, newTailor);
-                if (!cloudMode) {
-                    newTailor.id = id;
+                newTailor.id = id;
+                if (!localTailors.some(t => t.id === id)) {
                     localTailors.push(newTailor);
-                    renderTailors();
+                } else {
+                    localTailors = localTailors.map(t => t.id === id ? newTailor : t);
                 }
+                renderTailors();
                 closeNewTailorModal();
                 triggerToast(`${name} added to partners.`, 'success');
             } catch (err) {
