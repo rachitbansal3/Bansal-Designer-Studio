@@ -1905,17 +1905,7 @@
                     });
                 });
 
-                if (localTailors.length === 0) {
-                    const seeds = [
-                        { id: 1, name: 'Aslam Bhai', phone: '9876543210', specialty: 'Sherwanis & Suits' },
-                        { id: 2, name: 'Sohan Lal Master', phone: '9123456789', specialty: 'Kurtas & Shirts' },
-                        { id: 3, name: 'Verma Boutique Craft', phone: '8877665544', specialty: 'Blouses & Saree Alterations' }
-                    ];
-                    for (let t of seeds) {
-                        await dbAdd(STORE_TAILORS, t);
-                    }
-                    localTailors = seeds;
-                }
+
 
                 localBookings.sort((a,b) => b.id - a.id);
 
