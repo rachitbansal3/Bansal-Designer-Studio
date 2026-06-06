@@ -1163,11 +1163,11 @@
             
             // Adjust styles depending on type
             if (type === 'error') {
-                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-rose-955 text-rose-200 border border-rose-800 transition-all animate-fade-in";
+                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-red-950 text-red-200 border border-red-800 transition-all animate-fade-in";
             } else if (type === 'success') {
                 toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-emerald-950 text-emerald-200 border border-emerald-800 transition-all animate-fade-in";
             } else {
-                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-955 text-amber-200 border border-stone-800 transition-all animate-fade-in";
+                toastBox.className = "fixed bottom-6 right-6 z-[9999] flex items-center gap-3 p-4 rounded-xl shadow-2xl bg-stone-950 text-amber-200 border border-stone-800 transition-all animate-fade-in";
             }
             
             toastBox.classList.remove('hidden');
@@ -1610,18 +1610,24 @@
                 }
 
         function clearClipboardCacheForBooking(bookingId, garments) {
-            if (!window.clipboardBlobCache) return;
-            window.clipboardBlobCache.delete(`booking-${bookingId}`);
-            if (garments) {
-                garments.forEach(g => {
-                    window.clipboardBlobCache.delete(`garment-${g.id}`);
-                });
-            }
-            // Clear tailor composites
-            for (let key of window.clipboardBlobCache.keys()) {
-                if (key.startsWith(`booking-${bookingId}-tailor-`)) {
-                    window.clipboardBlobCache.delete(key);
+            try {
+                if (!window.clipboardBlobCache) return;
+                window.clipboardBlobCache.delete(`booking-${bookingId}`);
+                if (garments && Array.isArray(garments)) {
+                    garments.forEach(g => {
+                        if (g && g.id) {
+                            window.clipboardBlobCache.delete(`garment-${g.id}`);
+                        }
+                    });
                 }
+                // Clear tailor composites safely using forEach
+                window.clipboardBlobCache.forEach((value, key) => {
+                    if (typeof key === 'string' && key.startsWith(`booking-${bookingId}-tailor-`)) {
+                        window.clipboardBlobCache.delete(key);
+                    }
+                });
+            } catch (err) {
+                console.warn("Error clearing clipboard cache:", err);
             }
         }
 
@@ -2704,7 +2710,7 @@
                     triggerToast(`Booking #${editingBookingId} updated successfully!`, 'success');
                     editingBookingId = null;
                 } catch (err) {
-                    triggerToast('Could not update client portfolio.', 'error');
+                    triggerToast('Could not update client portfolio: ' + (err.message || err), 'error');
                 }
             } else {
                 try {
@@ -2721,7 +2727,7 @@
                     closeNewBookingModal();
                     triggerToast(`Booking #${id} saved successfully!`, 'success');
                 } catch (err) {
-                    triggerToast('Could not save client portfolio.', 'error');
+                    triggerToast('Could not save client portfolio: ' + (err.message || err), 'error');
                 }
             }
         }
@@ -2763,7 +2769,7 @@
                 closeNewTailorModal();
                 triggerToast(`${name} added to partners.`, 'success');
             } catch (err) {
-                triggerToast('Could not save partner directory.', 'error');
+                triggerToast('Could not save partner directory: ' + (err.message || err), 'error');
             }
         }
 
